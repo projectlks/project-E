@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Menu from "./menu";
 import Movie from "./movie";
 import Series from './series'
-import Serarch from "./search";
+import Serarch from "./searchTest";
 import image1 from "../img/img3.jpg"
 import menu from "../assets/menu.svg";
 import UpComing from "./upComing";

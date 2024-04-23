@@ -28,10 +28,11 @@ export default function Detail() {
   } = useFetch(
     `https://api.themoviedb.org/3/${type}/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
   );
-
-  useEffect(() => {
-    setMovie(moviedata);
-  }, [moviedata]);
+  // detail for movie
+//api.themoviedb.org/3/movie/934632?api_key=31d6afcc99f364c40d22f14b2fe5bc6e
+https: useEffect(() => {
+  setMovie(moviedata);
+}, [moviedata]);
  return (
    <>
      {error && <h1 className="w-full text-center py-10 text-3xl">Oops...Page not found!</h1>}

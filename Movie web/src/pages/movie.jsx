@@ -29,7 +29,12 @@ useEffect(() => {
   handleWidth();
 
   if (data && data.results) {
-    const totalPages = Math.ceil(data.results.length / itemsPerPage);
+    const totalPages = Math.ceil(
+      (filterValue !== ""
+        ? data.results.filter((m) => m.genre_ids.includes(filterValue))
+        : data.results
+      ).length / itemsPerPage
+    );
     setTotalPages(totalPages);
   }
 
@@ -67,7 +72,7 @@ useEffect(() => {
   };
 
   fetchGenresForTv();
-}, [data, itemsPerPage, screenSize]);
+}, [data, itemsPerPage, screenSize, filterValue]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
@@ -112,7 +117,7 @@ useEffect(() => {
         </div>
       )}
       {!error && !loading && (
-        <section className="relative h-auto  pb-[90px]">
+        <section className="relative md:min-h-screen h-auto  pb-[90px]">
           <SwitchTransition>
             <CSSTransition timeout={300} classNames="fade" key={startIndex}>
               <div className="w-full  grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 px-3 mt-3 md:px-5 ">
@@ -163,19 +168,17 @@ useEffect(() => {
 
                           <div className="absolute w-full top-[90%] left-0 group-hover:top-[67%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease  delay-300 flex items-center text-sm whitespace-nowrap overflow-hidden   overflow-ellipsis">
                             {genres && m.genre_ids && (
-                              <p className="flex w-[90%] mx-auto  whitespace-nowrap overflow-hidden   overflow-ellipsis">
+                              <p className="flex w-[90%] mx-auto whitespace-nowrap overflow-hidden overflow-ellipsis">
                                 {m.genre_ids.map((genreId, index) => (
-                                  <p key={genreId}>
+                                  <span key={genreId}>
                                     {genres[genreId]}
-
                                     {m.media_type &&
                                       m.media_type === "tv" &&
                                       genresForTv[genreId]}
-
                                     {index < m.genre_ids.length - 1
                                       ? ", "
                                       : "."}
-                                  </p>
+                                  </span>
                                 ))}
                               </p>
                             )}
@@ -186,6 +189,16 @@ useEffect(() => {
               </div>
             </CSSTransition>
           </SwitchTransition>
+
+          {data &&
+            data.results &&
+            filterValue &&
+            !data.results.filter((m) => m.genre_ids.includes(filterValue))
+              .length && (
+              <h1 className="w-full text-center py-10 text-3xl">
+                Sorry, couldn't find any matches!
+              </h1>
+            )}
           {/* button  */}
           <div className="w-full flex justify-center absolute bottom-[-25px] text-white space-x-4 mb-6 mx-auto  py-6">
             <button

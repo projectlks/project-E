@@ -7,15 +7,18 @@ export default function Search() {
   const [resultArray, setResultArray] = useState([]);
   const [selectIndex, setSelectIndex] = useState(-1);
 
-  const { data: movieData } = useFetch(`http://localhost:3000/movies`);
+  const { data: movieData } = useFetch(
+    `https://api.themoviedb.org/3/search/multi?query=${text}&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
     if (movieData) {
       setResultArray(
-        movieData.filter((movie) => {
-          return movie.title.toLowerCase().includes(text.toLowerCase());
-        })
+        movieData
+        // movieData.filter((movie) => {
+        //   return movie.title.toLowerCase().includes(text.toLowerCase());
+        // })
       );
     }
     if (text === "") {
@@ -118,8 +121,8 @@ export default function Search() {
             ))}
 
           {text && !resultArray.length && (
-            <p className="w-full px-4 py-2 hover:bg-blue-900 hover:bg-opacity-50 rounded-lg">
-              There is no result
+            <p className="w-full px-4 py-2  rounded-lg">
+              Sorry, couldn't find any matches!
             </p>
           )}
         </div>

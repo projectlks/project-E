@@ -16,6 +16,7 @@ export default function Movie({ url, filterValue }) {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [genres, setGenres] = useState({});
   const [genresForTv, setGenresForTv] = useState({});
+let screenSize = window.innerWidth;
 
   useEffect(() => {
     let screenSize = window.innerWidth;
@@ -31,7 +32,12 @@ export default function Movie({ url, filterValue }) {
     handleWidth();
 
     if (data && data.results) {
-      const totalPages = Math.ceil(data.results.length / itemsPerPage);
+      const totalPages = Math.ceil(
+        (filterValue !== ""
+          ? data.results.filter((m) => m.genre_ids.includes(filterValue))
+          : data.results
+        ).length / itemsPerPage
+      );
       setTotalPages(totalPages);
     }
 
@@ -69,7 +75,7 @@ export default function Movie({ url, filterValue }) {
     };
 
     fetchGenresForTv();
-  }, [data, itemsPerPage]);
+  }, [data, itemsPerPage, screenSize, filterValue]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
@@ -114,7 +120,7 @@ export default function Movie({ url, filterValue }) {
         </div>
       )}
       {!error && !loading && (
-        <section className="relative h-auto   pb-[90px]">
+        <section className="relative md:min-h-screen h-auto mb-28    pb-[90px]">
           <SwitchTransition>
             <CSSTransition timeout={300} classNames="fade" key={startIndex}>
               <div className="w-full  grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 px-3 mt-3 md:px-5 ">
@@ -167,7 +173,7 @@ export default function Movie({ url, filterValue }) {
                             {genres && m.genre_ids && (
                               <p className="flex w-[90%] mx-auto  whitespace-nowrap overflow-hidden   overflow-ellipsis">
                                 {m.genre_ids.map((genreId, index) => (
-                                  <p key={genreId}>
+                                  <span key={genreId}>
                                     {genres[genreId]}
 
                                     {m.media_type &&
@@ -177,7 +183,7 @@ export default function Movie({ url, filterValue }) {
                                     {index < m.genre_ids.length - 1
                                       ? ", "
                                       : "."}
-                                  </p>
+                                  </span>
                                 ))}
                               </p>
                             )}
@@ -188,6 +194,16 @@ export default function Movie({ url, filterValue }) {
               </div>
             </CSSTransition>
           </SwitchTransition>
+
+          {data &&
+            data.results &&
+            filterValue &&
+            !data.results.filter((m) => m.genre_ids.includes(filterValue))
+              .length && (
+              <h1 className="w-full text-center py-10 text-3xl">
+                Sorry, couldn't find any matches!
+              </h1>
+            )}
           {/* button  */}
           <div className="w-full flex justify-center absolute bottom-[-25px] text-white space-x-4 mb-6 mx-auto  py-6">
             <button
