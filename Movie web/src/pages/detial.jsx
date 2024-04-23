@@ -1,101 +1,183 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import star from "../assets/star.svg";
+import left from "../assets/left.svg";
+import share from "../assets/share.svg";
 
 export default function Detail() {
   const [movie,setMovie] =  useState([])
+  const [btnLoading, setBtnLoading] = useState(false)
+  const [type, setType] = useState('')
   let { id } = useParams();
-  let { data:moviedata, error, loading } = useFetch(`http://localhost:3000/movies/${id}`);
+  let location = useLocation()
+
+   useEffect(() => {
+     if (location.pathname === `/detailMovie/${id}`) {
+       setType('movie');
+     } else {
+       setType('tv');
+     }
+   }, [location]);
+  
+  console.log(location.pathname);
+  let {
+    data: moviedata,
+    error,
+    loading
+  } = useFetch(
+    `https://api.themoviedb.org/3/${type}/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
 
   useEffect(() => {
     setMovie(moviedata);
   }, [moviedata]);
+ return (
+   <>
+     {error && <h1 className="w-full text-center py-10 text-3xl">Oops...Page not found!</h1>}
+     {!error && loading && (
+       <div className="text-white w-full flex justify-center h-screen items-center ">
+         <svg
+           className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
+           xmlns="http://www.w3.org/2000/svg"
+           fill="none"
+           viewBox="0 0 24 24"
+         >
+           <circle
+             className="opacity-25"
+             cx="12"
+             cy="12"
+             r="10"
+             stroke="currentColor"
+             strokeWidth="4"
+           ></circle>
+           <path
+             className="opacity-75"
+             fill="currentColor"
+             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+           ></path>
+         </svg>
+       </div>
+     )}
 
-  return (
-    <>
-      {error && <h1>{error}</h1>}
-      {!error && loading && (
-        <div className="text-white w-full flex justify-center h-screen items-center ">
-          <svg
-            className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        </div>
-      )}
+     {!error && !loading && movie && (
+       <section
+         className="w-full min-h-screen bg-center bg-no-repeat bg-cover md:bg-contain "
+         style={{
+           backgroundImage: `url(${`https://image.tmdb.org/t/p/w500${movie.backdrop_path} `}) `
+         }}
+       >
+         <div className="w-full bg-black bg-opacity-70">
+           <div className="text-white flex w-full flex-col md:flex-row md:w-[80%]  mx-auto min-h-screen items-center ">
+             {/* back button */}
 
-      {!error && movie && (
-        <section className="text-white flex">
-          {/* back button */}
+             <Link to="/home" className="absolute top-3 left-3 ">
+               <img src={left} alt="left" className="w-10 h-10 " />
+             </Link>
 
-          <Link to="/home" className="absolute top-3 left-3 ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-10 h-10 "
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-              />
-            </svg>
-          </Link>
-          <div className="w-[50%]">
-            <img src={movie.poster} alt="" className="w-[80%] mx-auto" />
-          </div>
-          <div>
-            <h1 className="text-4xl">{movie.title}</h1>
-            <div className="flex items-center space-x-3">
-              <p className="flex items-center">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
-                  alt="IMDb"
-                  className="w-10 mr-2"
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-4 h-4 mr-1 text-yellow-400"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                  />
-                </svg>
-                {movie.rating} ,
-              </p>
+             <div className="w-[50%] my-[50px] md:mt-0 ">
+               <img
+                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                 alt=""
+                 className="w-[80%] mx-auto  shadow-md shadow-orange-100"
+               />
+             </div>
+             <div className="w-full px-10 relative">
+               {/* share icon */}
+               <div className=" absolute right-10 p-2 transition-all hover:bg-slate-500 rounded-full justify-center items-center flex">
+                 <img src={share} alt="share" className="w-8 h-8" />
+               </div>
 
-              <p> Year : {movie.year} ,</p>
-              <p> Director : {movie.director}</p>
-            </div>
-          </div>
-        </section>
-      )}
-    </>
-  );
+               {/* title */}
+               <h1 className="text-5xl mb-5 font-bold">
+                 {movie.name} {movie.original_title}
+               </h1>
+               {/* date  */}
+               <div className=" mb-20">
+                 <p className="text-3xl mb-3">
+                   {type === "movie" ? "Release Date : " : "First Air Date :"}
+                   {movie.release_date} {movie.first_air_date}
+                 </p>
+
+                 <div className="flex  space-x-2 text-[1rem] mb-4">
+                   {movie.genres &&
+                     movie.genres.map((g, index) => (
+                       <p key={g.id}>
+                         {g.name}
+                         {index === movie.genres.length - 1 ? "." : ","}
+                         {/* {index < m.genre_ids.length - 1 ? ", " : ""} */}
+                       </p>
+                     ))}
+                 </div>
+                 {/* rating and runtime */}
+                 <div className="flex items-center">
+                   <img
+                     src={star}
+                     alt="star"
+                     className="w-10 h-15 mr-1 text-red-400"
+                   />
+                   <p className="text-[40px] mr-3">
+                     {movie.vote_average && movie.vote_average.toFixed(1)}
+                   </p>
+                   / 10 ,
+                   <img
+                     src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
+                     alt="IMDb"
+                     className="w-10 mx-3"
+                   />
+                   <h1 className="text-[40px] mr-3">
+                     , {movie.runtime} {movie.number_of_episodes}{" "}
+                     {type === 'tv' ? "Episodes" : "min"}
+                   </h1>
+                 </div>
+
+                 {/*  */}
+                 <p className="text-[1rem]">{movie.overview}</p>
+                 {/* <p> Director : {movie.director}</p> */}
+               </div>
+
+               <div className="flex w-full space-x-10 justify-center py-5">
+                 <a
+                   onClick={() => setBtnLoading(true)}
+                   href={movie.homepage}
+                   className=" w-[50%] py-3 bg-red-400 hover:bg-blue-900 bg-opacity-80 transition-all rounded-full cursor-pointer flex justify-center items-center"
+                 >
+                   {btnLoading && (
+                     <svg
+                       className="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-700 "
+                       xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                     >
+                       <circle
+                         className="opacity-25"
+                         cx="12"
+                         cy="12"
+                         r="10"
+                         stroke="currentColor"
+                         strokeWidth="4"
+                       ></circle>
+                       <path
+                         className="opacity-75"
+                         fill="currentColor"
+                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                       ></path>
+                     </svg>
+                   )}
+                   <h1>More Info</h1>
+                 </a>
+
+                 <div className=" w-[50%] py-3 bg-blue-700 transition-all  hover:bg-blue-900 bg-opacity-80 rounded-full cursor-not-allowed text-center">
+                   Watch Now
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </section>
+     )}
+   </>
+ );
 }
 
            

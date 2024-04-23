@@ -9,65 +9,67 @@ import star from "../assets/star.svg";
 
 export default function Movie({ url, filterValue }) {
   const { data, loading, error } = useFetch(
-    `https://api.themoviedb.org/3/trending/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+    `https://api.themoviedb.org/3/trending/tv/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
   );
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [genres, setGenres] = useState({});
   const [genresForTv, setGenresForTv] = useState({});
-let screenSize = window.innerWidth;
-useEffect(() => {
-  const handleWidth = () => {
-    if (screenSize < 600) {
-      setItemsPerPage(6);
-    } else {
-      setItemsPerPage(10);
+
+  useEffect(() => {
+    let screenSize = window.innerWidth;
+
+    const handleWidth = () => {
+      if (screenSize < 600) {
+        setItemsPerPage(6);
+      } else {
+        setItemsPerPage(10);
+      }
+    };
+
+    handleWidth();
+
+    if (data && data.results) {
+      const totalPages = Math.ceil(data.results.length / itemsPerPage);
+      setTotalPages(totalPages);
     }
-  };
 
-  handleWidth();
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch(
+          "https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
+        );
+        const genreData = await response.json();
+        const genreMap = {};
+        genreData.genres.forEach((genre) => {
+          genreMap[genre.id] = genre.name;
+        });
+        setGenres(genreMap);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
 
-  if (data && data.results) {
-    const totalPages = Math.ceil(data.results.length / itemsPerPage);
-    setTotalPages(totalPages);
-  }
+    fetchGenres();
+    const fetchGenresForTv = async () => {
+      try {
+        const response = await fetch(
+          "https://api.themoviedb.org/3/genre/tv/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
+        );
+        const genreData = await response.json();
+        const genreMap = {};
+        genreData.genres.forEach((genre) => {
+          genreMap[genre.id] = genre.name;
+        });
+        setGenresForTv(genreMap);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
 
-  const fetchGenres = async () => {
-    try {
-      const response = await fetch(
-        "https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-      );
-      const genreData = await response.json();
-      const genreMap = {};
-      genreData.genres.forEach((genre) => {
-        genreMap[genre.id] = genre.name;
-      });
-      setGenres(genreMap);
-    } catch (error) {
-      console.error("Error fetching genres:", error);
-    }
-  };
-
-  fetchGenres();
-  const fetchGenresForTv = async () => {
-    try {
-      const response = await fetch(
-        "https://api.themoviedb.org/3/genre/tv/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-      );
-      const genreData = await response.json();
-      const genreMap = {};
-      genreData.genres.forEach((genre) => {
-        genreMap[genre.id] = genre.name;
-      });
-      setGenresForTv(genreMap);
-    } catch (error) {
-      console.error("Error fetching genres:", error);
-    }
-  };
-
-  fetchGenresForTv();
-}, [data, itemsPerPage, screenSize]);
+    fetchGenresForTv();
+  }, [data, itemsPerPage]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
@@ -112,7 +114,7 @@ useEffect(() => {
         </div>
       )}
       {!error && !loading && (
-        <section className="relative h-auto  pb-[90px]">
+        <section className="relative h-auto   pb-[90px]">
           <SwitchTransition>
             <CSSTransition timeout={300} classNames="fade" key={startIndex}>
               <div className="w-full  grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 px-3 mt-3 md:px-5 ">
@@ -126,7 +128,7 @@ useEffect(() => {
                   )
                     .slice(startIndex, endIndex)
                     .map((m) => (
-                      <Link to={`/detailMovie/${m.id}`} key={m.id}>
+                      <Link to={`/detailSeries/${m.id}`} key={m.id}>
                         <div className="relative group">
                           <img
                             src={`https://image.tmdb.org/t/p/w500${m.poster_path}`}
@@ -137,7 +139,7 @@ useEffect(() => {
                             <img
                               src={star}
                               alt="star"
-                              className="w-4 h-4 mr-1 "
+                              className="w-4 h-4 mr-1 text-red-400"
                             />
                             {m.vote_average.toFixed(1)}
                           </p>

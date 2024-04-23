@@ -33,7 +33,7 @@ import { Link } from 'react-router-dom';
 
 
 
-function menu ({setUrl}) {
+function menu ({setUrl, setFilterValue}) {
   const images = [
     img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
     img11, img12, img13, img14, img15, img16, img17, img18, img19, img20
@@ -53,7 +53,7 @@ function menu ({setUrl}) {
 
 
   return (
-    <section className="w-full border rounded-md h-full relative">
+    <section className="w-full border rounded-md min-h-full relative">
       <div className="w-[90%] mx-auto flex flex-col justify-center items-center border-b-2 py-2 relative">
         <img
           src={profile}
@@ -120,7 +120,11 @@ function menu ({setUrl}) {
       {/* all  */}
       <div
         className="w-[90%] mx-auto flex text-[14px] items-center space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80 hover:bg-blue-900 mb-2"
-        onClick={() => setUrl("http://localhost:3000/movies")}
+        onClick={() =>
+          setUrl(
+            "https://api.themoviedb.org/3/trending/all/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
+          )
+        }
       >
         <img src={all} alt="" className="w-5 h-5" />
         <p>All</p>
@@ -129,13 +133,21 @@ function menu ({setUrl}) {
       <div className="w-[90%] cursor-pointer mx-auto flex justify-between text-[14px] items-center  px-3 rounded-md hover:bg-opacity-80 hover:bg-blue-900 ">
         <div
           className="flex space-x-2 w-full py-2   "
-          onClick={() => setUrl(`http://localhost:3000/movies?type=movie`)}
+          onClick={() => {
+            setUrl(
+              `https://api.themoviedb.org/3/movie/now_playing?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+            );
+            setFilterValue("");
+          }}
         >
           <img src={movie} alt="" className="w-5 h-5" />
           <p>Movies</p>
         </div>
         <div
-          onClick={() => setMoviesFilter(moviesFilter === 0 ? 180 : 0)}
+          onClick={() => {
+            setMoviesFilter(moviesFilter === 0 ? 180 : 0);
+            setSeriesFilter(0);
+          }}
           className="p-1 rounded-full hover:bg-gray-600"
         >
           <img
@@ -148,22 +160,37 @@ function menu ({setUrl}) {
       </div>
 
       <div
-        className={`w-[90%] cursor-pointer mx-auto flex flex-col text-[14px]     px-3 rounded-md  mb-2 ${
+        className={`w-[90%] cursor-pointer mx-auto flex flex-col text-[14px]   bg-blue-950    px-3 rounded-md  mb-2 ${
           moviesFilter === 180
-            ? "h-[130px] py-2 transition-all "
+            ? "h-[170px] py-2 transition-all "
             : "h-0 transition-all "
         }`}
       >
         {moviesFilter === 180 && (
           <section>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
+            <div
+              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
+              onClick={() => setFilterValue(28)}
+            >
               <p>Action</p>
             </div>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
-              <p>Horer</p>
+            <div
+              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
+              onClick={() => setFilterValue(16)}
+            >
+              <p>Animation</p>
             </div>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
-              <p>Funny</p>
+            <div
+              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
+              onClick={() => setFilterValue(18)}
+            >
+              <p>Drama</p>
+            </div>
+            <div
+              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
+              onClick={() => setFilterValue(10751)}
+            >
+              <p>Family</p>
             </div>
           </section>
         )}
@@ -174,8 +201,10 @@ function menu ({setUrl}) {
         <div
           className="flex space-x-2 w-full  py-2"
           onClick={() => {
-            setUrl(`http://localhost:3000/movies?type=series`);
-            test();
+            setUrl(
+              `https://api.themoviedb.org/3/tv/top_rated?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+            );
+            setFilterValue("");
           }}
         >
           <img src={series} alt="" className="w-5 h-5" />
@@ -186,6 +215,7 @@ function menu ({setUrl}) {
           onClick={(e) => {
             e.preventDefault();
             setSeriesFilter(seriesFilter === 0 ? 180 : 0);
+            setMoviesFilter(0);
           }}
           className="p-1 rounded-full hover:bg-gray-600"
         >
