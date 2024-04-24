@@ -60,7 +60,7 @@ https: return (
       </div>
 
       {/* right */}
-      <div className="flex w-full flex-col space-y-20 md:h-screen h-[200%] overflow-auto">
+      <div className="flex w-full flex-col space-y-20 xl:h-screen h-[200%] overflow-auto">
         <div className="right w-full h-auto min-h-screen ">
           <h1 className="text-4xl mx-5 font-bold">Movies</h1>
           <Movie url={url} filterValue={filterValue} />

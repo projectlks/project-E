@@ -41,23 +41,7 @@ let screenSize = window.innerWidth;
       setTotalPages(totalPages);
     }
 
-    const fetchGenres = async () => {
-      try {
-        const response = await fetch(
-          "https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-        );
-        const genreData = await response.json();
-        const genreMap = {};
-        genreData.genres.forEach((genre) => {
-          genreMap[genre.id] = genre.name;
-        });
-        setGenres(genreMap);
-      } catch (error) {
-        console.error("Error fetching genres:", error);
-      }
-    };
-
-    fetchGenres();
+   
     const fetchGenresForTv = async () => {
       try {
         const response = await fetch(

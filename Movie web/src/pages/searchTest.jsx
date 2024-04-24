@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import { Link, useNavigate } from "react-router-dom";
 
-
 export default function SearchTest() {
   // State variables
   const [text, setText] = useState(""); // Input text
   const [resultArray, setResultArray] = useState([]); // Array to store search results
   const [selectIndex, setSelectIndex] = useState(-1); // Index of selected item in search results
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
   // Fetch data from API based on input text
   const { data: movieData } = useFetch(
     `https://api.themoviedb.org/3/search/multi?query=${text}&include_adult=false&language=en-US&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
   );
-
+  // Update search results when data is available
+useEffect(() => {
+  if (movieData && movieData.results) {
+    let result = movieData.results.map((d) => ({
+      id: d.id,
+      name: d.original_name ? d.original_name : d.original_title,
+      type: d.media_type,
+      img: d.poster_path
+    }));
+   return setResultArray(result.slice(0, 10));
+  }
+}, [movieData]);
   // Handle keyboard events for navigation and search
   let handleKeys = async (e) => {
     await setText(e.target.value); // Update text state
@@ -31,22 +42,16 @@ const navigate = useNavigate()
       } else {
         setSelectIndex(resultArray.length - 1);
       }
-    }
-    else if (e.key === 'Enter' ) {
-      let id = resultArray[selectIndex].id;
-      let type = resultArray[selectIndex].type
-      type === "movie"
-        ? navigate(`/detailMovie/${id}`)
-        : navigate(`/detailSeries/${id}`);
-    }
-    // Update search results when data is available
-    else if (movieData && movieData.results) {
-      let result = movieData.results.map((d) => ({
-        id: d.id,
-        name: d.original_name ? d.original_name : d.original_title,
-        type: d.media_type
-      }));
-      setResultArray(result.slice(0, 10));
+    } else if (e.key === "Enter") {
+      // Handle Enter key press
+      if (resultArray && resultArray[selectIndex]) {
+        let id = resultArray[selectIndex].id;
+        let type = resultArray[selectIndex].type;
+        // Navigate based on the type
+        type === "movie"
+          ? navigate(`/detailMovie/${id}`)
+          : navigate(`/detailSeries/${id}`);
+      }
     }
   };
 
@@ -72,7 +77,7 @@ const navigate = useNavigate()
 
       {/* Search results section */}
       <section
-        className={`w-full bg-black px-4 md:px-8 bg-opacity-80 absolute z-50  text-white flex items-end flex-col 
+        className={`w-full bg-black px-4 md:px-8 bg-opacity-80 absolute z-50   text-white flex items-end flex-col 
         ${text ? "h-screen" : ""}`}
       >
         <div
@@ -84,13 +89,18 @@ const navigate = useNavigate()
           {resultArray &&
             !!resultArray.length &&
             resultArray.map((m, index) => (
-              <Link to=  { m.type === 'movie' ? `/detailMovie/${m.id}` : `/detailSeries/${m.id}`} >
+              <Link
+                key={m.id}
+                to={
+                  m.type === "movie"
+                    ? `/detailMovie/${m.id}`
+                    : `/detailSeries/${m.id}`
+                }
+              >
                 <div
-                  className={`w-full relative flex items-center px-2 py-2 hover:bg-blue-900 hover:bg-opacity-80 rounded-lg  ${
+                  className={`w-full h-14 relative flex my-2 items-center px-2  hover:bg-blue-900 hover:bg-opacity-80 rounded-lg  ${
                     selectIndex === index ? "bg-blue-900 bg-opacity-80" : ""
                   }`}
-                  key={m.id}
-                  onClick={() => handleClick(m.title, m.id)} // Handle click event
                 >
                   {/* Placeholder icon */}
                   <svg
@@ -108,11 +118,17 @@ const navigate = useNavigate()
                     />
                   </svg>
                   {/* Movie poster */}
-                  {/* <img
-                  alt="poster"
-                  src={`https://image.tmdb.org/t/p/w500${m.poster_path}`}
-                  className="h-full rounded-xl "
-                /> */}
+
+                  <div
+                    className="w-14 p-1 h-full object-cover mx-3 
+                   overflow-hidden"
+                  >
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${m.img}`}
+                      className="w-full h-auto aspect-square rounded-sm  "
+                    />
+                  </div>
+
                   {/* Movie name */}
                   <h1> {m.name}</h1>
 

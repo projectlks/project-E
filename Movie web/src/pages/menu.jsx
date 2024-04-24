@@ -57,8 +57,9 @@ function menu ({setUrl, setFilterValue}) {
       <div className="w-[90%] mx-auto flex flex-col justify-center items-center border-b-2 py-2 relative">
         <img
           src={profile}
-          alt=""
+          alt="profile"
           className="rounded-full mx-auto w-[50%] aspect-square"
+          onDoubleClick={()=>{ edit === false ? setEdit(true) : setEdit(false)}}
         />
         <img
           src={editIcon}

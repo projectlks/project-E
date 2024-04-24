@@ -9,13 +9,12 @@ export default function upComing() {
 let { data: genreData } = useFetch(
   `https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
 );
+//api.themoviedb.org/3/trending/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e
 
-
-useEffect(() => {
+https: useEffect(() => {
   let genre = {};
   genreData && genreData.genres.forEach((d) => (genre[d.id] = d.name));
-setGenre(genre);
-console.log(genre);
+  setGenre(genre);
 }, [genreData]);
 
 
