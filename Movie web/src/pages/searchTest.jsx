@@ -20,9 +20,10 @@ useEffect(() => {
       id: d.id,
       name: d.original_name ? d.original_name : d.original_title,
       type: d.media_type,
-      img: d.poster_path
+      img: d.poster_path,
+      date: d.release_date  ? d.release_date : d.first_air_date
     }));
-   return setResultArray(result.slice(0, 10));
+   return setResultArray(result && result.slice(0, 10));
   }
 }, [movieData]);
   // Handle keyboard events for navigation and search
@@ -98,7 +99,7 @@ useEffect(() => {
                 }
               >
                 <div
-                  className={`w-full h-14 relative flex my-2 items-center px-2  hover:bg-blue-900 hover:bg-opacity-80 rounded-lg  ${
+                  className={`w-full  h-14 relative flex my-2 items-center px-2 hover:bg-blue-900 hover:bg-opacity-80 rounded-lg ${
                     selectIndex === index ? "bg-blue-900 bg-opacity-80" : ""
                   }`}
                 >
@@ -118,24 +119,26 @@ useEffect(() => {
                     />
                   </svg>
                   {/* Movie poster */}
-
-                  <div
-                    className="w-14 p-1 h-full object-cover mx-3 
-                   overflow-hidden"
-                  >
+                  <div className="flex justify-center aspect-square p-1 h-full object-cover mr-2 overflow-hidden">
                     <img
                       src={`https://image.tmdb.org/t/p/w500${m.img}`}
-                      className="w-full h-auto aspect-square rounded-sm  "
+                      className="w-auto h-full rounded-sm"
+                      alt={m.name}
                     />
                   </div>
-
-                  {/* Movie name */}
-                  <h1> {m.name}</h1>
-
-                  {/* type */}
-                  <p className="text-sm absolute right-2 w-14 text-center rounded-full py-[2px] border">
-                    {" "}
-                    {m.type}
+                  {/* Movie name and date */}
+                  <div>
+                    <h1 className="text-lg font-semibold">{m.name}</h1>
+                    <p className="text-sm text-gray-500">
+                      {m.date &&m.date.slice(0, 4)}
+                    </p>
+                  </div>
+                  {/* Type */}
+                  <p
+                    className={`text-[10px]  absolute right-0 w-[57px] text-center bottom-[-9px] px-2 py-1 bg-transparent  border border-gold text-yellow-300 transform rotate-45 origin-top-right ::b`}
+                    style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" }}
+                  >
+                    {m.type === "movie" ? "Movie" : "TV Show"}
                   </p>
                 </div>
               </Link>
@@ -152,3 +155,46 @@ useEffect(() => {
     </>
   );
 }
+
+
+
+    //  <div
+    //    className={`w-full h-14 relative flex my-2 items-center px-2  hover:bg-blue-900 hover:bg-opacity-80 rounded-lg  ${
+    //      selectIndex === index ? "bg-blue-900 bg-opacity-80" : ""
+    //    }`}
+    //  >
+    //    {/* Placeholder icon */}
+    //    <svg
+    //      xmlns="http://www.w3.org/2000/svg"
+    //      fill="none"
+    //      viewBox="0 0 24 24"
+    //      strokeWidth={1.5}
+    //      stroke="currentColor"
+    //      className="w-5 h-5 mr-2"
+    //    >
+    //      <path
+    //        strokeLinecap="round"
+    //        strokeLinejoin="round"
+    //        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+    //      />
+    //    </svg>
+    //    {/* Movie poster */}
+
+    //    <div
+    //      className="  flex justify-center aspect-square p-1 h-full object-cover mr-2 
+    //                overflow-hidden"
+    //    >
+    //      <img
+    //        src={`https://image.tmdb.org/t/p/w500${m.img}`}
+    //        className="w-auto h-full rounded-sm  "
+    //      />
+    //    </div>
+
+    //    {/* Movie name */}
+    //    <h1> {m.name}</h1>
+    //    <h1> {m.date.slice(0, 4)}</h1>
+    //    {/* type */}
+    //    <p className="text-sm absolute right-2 w-14 text-center rounded-full py-[2px] border">
+    //      {m.type}
+    //    </p>
+    //  </div>;

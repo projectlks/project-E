@@ -4,27 +4,16 @@ import useFetch from '../hooks/useFetch';
 
 
 export default function upComing() {
-
-  let [genre, setGenre] = useState([])
-let { data: genreData } = useFetch(
-  `https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
-);
-//api.themoviedb.org/3/trending/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e
-
-https: useEffect(() => {
-  let genre = {};
-  genreData && genreData.genres.forEach((d) => (genre[d.id] = d.name));
-  setGenre(genre);
-}, [genreData]);
+  let [genre, setGenre] = useState([]);
+  let { data: genreData } = useFetch(
+    `https://api.themoviedb.org/3/trending/all/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
 
 
-
-
-
-    let { data } = useFetch(
-      // "https://api.themoviedb.org/3/top_rated/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-      "https://api.themoviedb.org/3/movie/upcoming?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-    );
+  let { data } = useFetch(
+    // "https://api.themoviedb.org/3/top_rated/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
+    "https://api.themoviedb.org/3/movie/upcoming?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
+  );
 
   return (
     <section className="space-y-3 scrollbar-thin mb-5 w-full py-4 px-5 overflow-x-auto scrollbar-thin scrollbar-thumb-red-500">
@@ -60,10 +49,7 @@ https: useEffect(() => {
                 <span className="flex  space-x-2 items-center">
                   {/* genre */}
                   <p className="py-[5px] w-[60px] text-center px-[8px] whitespace-nowrap overflow-hidden overflow-ellipsis text-[12px] bg-blue-500 rounded-md">
-                    {/* {m.genre_ids &&
-                      m.genre_ids.map((code) => (
-                        <p key={code}> {genre[code]} </p>
-                      ))} */}
+                   
 
                     {m.genre_ids && genre[m.genre_ids[0]]}
                   </p>

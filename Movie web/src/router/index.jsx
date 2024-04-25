@@ -5,6 +5,7 @@ import Detial from "../pages/detial.jsx";
 import Login from "../pages/login.jsx";
 import SignUp from "../pages/signUp.jsx";
 import Layout from "../pages/layout.jsx";
+import CreateAndEditForm from "../pages/createAndEditForm.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -33,6 +34,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />
+      },
+      {
+        path: "/create",
+        element: <CreateAndEditForm />
+      },
+      {
+        path: "/edit",
+        element: <CreateAndEditForm />
       }
     ]
   }

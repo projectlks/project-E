@@ -18,8 +18,10 @@ https: return (
   <section>
     {/* hero section */}
     <section
-      className="hero-section relative bg-cover bg-no-repeat bg-center h-[300px] flex flex-col justify-center items-center"
-      style={{ backgroundImage: `url(${image1})` }}
+      className="hero-section border-b-2 relative bg-cover bg-no-repeat bg-center h-[300px] flex flex-col justify-center items-center"
+      style={{
+        backgroundImage: `url(https://cdn.marvel.com/content/1x/deadpool3_lob_fea_dsk_01.jpg)`
+      }}
     >
       <div className="absolute inset-0  opacity-50"></div>
       <h1 className="text-4xl font-bold mb-6 z-10">Eternal Odyssey</h1>
