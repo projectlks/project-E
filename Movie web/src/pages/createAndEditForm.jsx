@@ -4,7 +4,7 @@ import X from "../assets/x.svg";
 import './createAndEdit.css'
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { useLocation, useNavigate } from 'react-router';
-
+import SecondForm from './secondForm'
 
 export default function createAndEditForm() {
     const [title,setTitle] = useState('')
@@ -14,7 +14,7 @@ export default function createAndEditForm() {
     const [year, setYear] = useState("");
     const [month, setmonth] = useState("");
     const [day, setDay] = useState("");
-    const [test,setTest] = useState('')
+    const [test,setTest] = useState(false)
 
         let location = useLocation();
       let navigate =  useNavigate()
@@ -28,8 +28,14 @@ export default function createAndEditForm() {
           classNames="switch"
           key={location.pathname}
         >
-          <form className="max-w-lg w-[90%] mx-auto h-screen flex flex-col justify-center transition-all transform   ">
-            <div className="w-full h-auto bg-blue-800 bg-opacity-20 p-8 rounded-lg">
+          <form className="max-w-lg w-[90%] mx-auto h-screen flex items-center justify-center overflow-hidden transition-all transform  relative ">
+            {/* real one */}
+
+            <div
+              className={`  ${
+                !test ? "left-0 delay-300" : "-left-full "
+              } w-full transition-all h-auto bg-blue-800 bg-opacity-20 p-8 absolute rounded-lg`}
+            >
               <h1 className="text-4xl text-bold font-bold mb-5">Create Form</h1>
               {/* Title */}
               <div className="relative z-0 w-full mb-6 group">
@@ -238,7 +244,7 @@ export default function createAndEditForm() {
               <div className="w-full h-8 flex  space-x-3 items-center ">
                 <div className="w-full flex space-x-3">
                   <p
-                    className="text-xs text-gray-50 px-3 py-1 bg-slate-500 rounded-md cursor-pointer"
+                    className="text-xs transition-all text-gray-50 px-3 py-2 bg-blue-900 bg-opacity-20 hover:bg-opacity-80 rounded-md cursor-pointer"
                     onClick={() => {
                       setYear(new Date().getFullYear());
                       setmonth(new Date().getMonth() + 1);
@@ -249,29 +255,11 @@ export default function createAndEditForm() {
                   </p>
                 </div>
                 {/* next page */}
-                <svg
-                  onClick={() => {
-                    setTest("done");
-                    navigate("/create");
-                  }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="ml-3 mr-3 hover:mr-2 h-full  hover:text-red-600 transition-all cursor-pointer "
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-                  />
-                </svg>
+
                 {/* <h1 className="text-2xl">Next</h1> */}
                 <svg
                   onClick={() => {
-                    setTest("done");
-                    navigate("/edit");
+                    setTest(true);
                   }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -288,6 +276,7 @@ export default function createAndEditForm() {
                 </svg>
               </div>
             </div>
+           <SecondForm test={test} setTest={setTest}/>
           </form>
         </CSSTransition>
       </SwitchTransition>
