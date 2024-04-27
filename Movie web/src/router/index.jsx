@@ -5,7 +5,7 @@ import Detial from "../pages/detial.jsx";
 import Login from "../pages/login.jsx";
 import SignUp from "../pages/signUp.jsx";
 import Layout from "../pages/layout.jsx";
-import CreateAndEditForm from "../pages/createAndEditForm.jsx";
+import CreateAndEditForm from "../pages/createAndEditForm/createAndEditForm.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
