@@ -4,8 +4,10 @@ export default function rating({rating, setRating}) {
   return (
     <>
       <div className=" w-full space-x-3 z-0  flex items-center group mb-6">
-        <h1 className="text-xs whitespace-nowrap">IMDB : </h1>
-        <div className='relative'>
+        <label htmlFor="floating_company" className="text-xs whitespace-nowrap">
+          IMDB :
+        </label>
+        <div className="relative">
           <input
             value={rating}
             onChange={(e) => {

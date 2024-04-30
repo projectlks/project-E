@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function date({ year, setYear, month, setMonth, day, setDay, setTest }) {
+export default function date({ year, setYear, month, setMonth, day, setDay, setSwitchForm }) {
   return (
     <>
-      <h1 className="mb-3"> Release Date or First Aired Date</h1>
+      <h1 className="mb-5"> Release Date or First Aired Date</h1>
       <div className="grid grid-cols-3 z-10 gap-6">
         {/* year */}
         <div className="relative  w-full mb-5 group">
@@ -101,7 +101,7 @@ export default function date({ year, setYear, month, setMonth, day, setDay, setT
 
         <svg
           onClick={() => {
-            setTest(true);
+            setSwitchForm(true);
           }}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

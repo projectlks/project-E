@@ -88,11 +88,6 @@ const Movie = ({ filterValue }) => {
     }
   };
 
-// console.log("total pages is :", totalPages)
-// console.log("current page is :", currentPage)
-  // new Date().getFullYear()
-  // new Date().getMonth() + 1
-  // new Date().getDate()
   return (
     <>
       {error && <h1>{error}</h1>}

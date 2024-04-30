@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import star from "../assets/star.svg";
 import left from "../assets/left.svg";
@@ -11,6 +11,7 @@ export default function Detail() {
   const [type, setType] = useState("");
   let { id } = useParams();
   let location = useLocation();
+  let navigate =useNavigate()
 
   useEffect(() => {
     if (location.pathname === `/detailMovie/${id}`) {
@@ -75,9 +76,14 @@ export default function Detail() {
             <div className="text-white flex w-full flex-col md:flex-row md:w-[80%]  mx-auto min-h-screen items-center ">
               {/* back button */}
 
-              <Link to="/home" className="absolute top-3 left-3 ">
-                <img src={left} alt="left" className="w-10 h-10 " />
-              </Link>
+            
+                <img
+                  src={left}
+                  alt="left"
+                  className="w-10 h-10 absolute top-3 left-3 "
+                  onClick={()=>{navigate(-1)}}
+                />
+        
 
               <div className="w-[50%] my-[50px] md:mt-0 ">
                 <img
@@ -177,7 +183,7 @@ export default function Detail() {
                         : "cusor-pointer"
                     } text-center`}
                   >
-                    Watch Now 
+                    Watch Now
                   </div>
                 </div>
               </div>

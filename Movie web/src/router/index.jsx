@@ -6,6 +6,8 @@ import Login from "../pages/login.jsx";
 import SignUp from "../pages/signUp.jsx";
 import Layout from "../pages/layout.jsx";
 import CreateAndEditForm from "../pages/createAndEditForm/createAndEditForm.jsx";
+import Movie from "../pages/dashBoard/movie.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,8 +42,12 @@ const router = createBrowserRouter([
         element: <CreateAndEditForm />
       },
       {
-        path: "/edit",
+        path: "/edit/:id",
         element: <CreateAndEditForm />
+      },
+      {
+        path: '/movie',
+        element: <Movie/>
       }
     ]
   }

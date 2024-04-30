@@ -59,7 +59,9 @@ function menu ({setUrl, setFilterValue}) {
           src={profile}
           alt="profile"
           className="rounded-full mx-auto w-[50%] aspect-square"
-          onDoubleClick={()=>{ edit === false ? setEdit(true) : setEdit(false)}}
+          onDoubleClick={() => {
+            edit === false ? setEdit(true) : setEdit(false);
+          }}
         />
         <img
           src={editIcon}
@@ -265,6 +267,13 @@ function menu ({setUrl, setFilterValue}) {
         <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
           <img src={logout} alt="" className="w-6 h-6" />
           <p>Logout</p>
+        </div>
+      </Link>
+
+      <Link to="/create">
+        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
+          <img src={editIcon} alt="" className="w-6 h-6" />
+          <p>Create</p>
         </div>
       </Link>
     </section>

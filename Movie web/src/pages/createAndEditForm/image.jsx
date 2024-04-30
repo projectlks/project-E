@@ -4,13 +4,13 @@ import plus from "../../assets/plus.svg";
 export default function image({poster, setPoster, backDrop, setBackDrop}) {
   return (
     <>
-      <div className="relative space-x-6 max-h-[200px] flex justify-between w-full ">
+      <div className="relative space-x-6 max-h-[200px] flex mb-6 justify-between w-full ">
         {/* poster image */}
         <div className="min-w-[100px] h-[200px] space-y-3 flex items-center flex-col">
           {poster && (
             <div className="w-full h-full">
               <img
-                src={URL.createObjectURL(poster)}
+                src={poster}
                 alt="Poster Preview"
                 className="w-auto h-full rounded "
                 style={{ maxWidth: "100px" }}
@@ -21,7 +21,7 @@ export default function image({poster, setPoster, backDrop, setBackDrop}) {
           {!poster && (
             <label
               htmlFor="poster"
-              className=" w-full h-full flex items-center justify-center bg-blue-400 bg-opacity-30 hover:bg-opacity-20 transition-all"
+              className=" w-full h-full cursor-pointer flex items-center justify-center bg-blue-400 bg-opacity-30 hover:bg-opacity-20 transition-all"
             >
               <img src={plus} alt="" className="w-6 h-6" />
             </label>
@@ -36,7 +36,7 @@ export default function image({poster, setPoster, backDrop, setBackDrop}) {
             <input
               onChange={(e) => {
                 let value = e.target.files[0];
-                setPoster(value);
+                setPoster(URL.createObjectURL(value));
               }}
               type="file"
               accept="image/*"
@@ -52,7 +52,7 @@ export default function image({poster, setPoster, backDrop, setBackDrop}) {
           {backDrop && (
             <div className="w-full h-[156px] ">
               <img
-                src={URL.createObjectURL(backDrop)}
+                src={backDrop}
                 alt="Poster Preview"
                 className="w-auto h-full mx-auto rounded"
               />
@@ -61,7 +61,7 @@ export default function image({poster, setPoster, backDrop, setBackDrop}) {
           {!backDrop && (
             <label
               htmlFor="backDrop"
-              className=" w-full h-full flex items-center justify-center bg-blue-400 bg-opacity-30 hover:bg-opacity-20 transition-all"
+              className=" w-full cursor-pointer h-full flex items-center justify-center bg-blue-400 bg-opacity-30 hover:bg-opacity-20 transition-all"
             >
               <img src={plus} alt="" className="w-6 h-6" />
             </label>
@@ -77,7 +77,7 @@ export default function image({poster, setPoster, backDrop, setBackDrop}) {
             <input
               onChange={(e) => {
                 let value = e.target.files[0];
-                setBackDrop(value);
+                setBackDrop(URL.createObjectURL(value));
               }}
               type="file"
               accept="image/*"

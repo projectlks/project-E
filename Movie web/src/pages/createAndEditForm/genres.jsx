@@ -30,11 +30,15 @@ export default function ({genres, setGenres, type, setType, suggestGenres}) {
           onKeyDown={(e) => {
             handleKeys(e);
             if (e.key === "Enter") {
-              if (type !== "" && !filterArray.length && !genres.includes(type)) {
+              if (
+                type !== "" &&
+                !filterArray.length &&
+                !genres.includes(type)
+              ) {
                 setGenres((prev) => [...prev, type]);
                 setType("");
-              }else{
-                setType('')
+              } else {
+                setType("");
               }
             }
           }}
@@ -58,7 +62,7 @@ export default function ({genres, setGenres, type, setType, suggestGenres}) {
         </label>
         {/* plus icon */}
         <div
-          className="h-full aspect-square flex justify-center transition-all items-center p-1  rounded-full"
+          className="h-full cursor-pointer aspect-square flex justify-center transition-all items-center p-1  rounded-full"
           onClick={() => {
             if (type !== "" && !genres.includes(type)) {
               setGenres((prev) => [...prev, type]);
@@ -75,7 +79,7 @@ export default function ({genres, setGenres, type, setType, suggestGenres}) {
 
         {/* auto complete genres */}
         <div
-          className={`absolute top-full max-h-[200px]  overflow-auto ${
+          className={`absolute top-full max-h-[200px] w-[calc(100%-42px)]  overflow-auto ${
             filterArray.length
               ? "bg-black border-x-[1px] z-50 "
               : "hidden border-none"
@@ -114,7 +118,7 @@ export default function ({genres, setGenres, type, setType, suggestGenres}) {
         <p className="w-24 py-1 px-2 whitespace-nowrap"> Genres : </p>
 
         {genres && !!genres.length && (
-          <span className="w-full flex flex-wrap  gap-4 ">
+          <span className="w-full flex flex-wrap  gap-4 " >
             {genres.map((g) => (
               <div
                 className="relative cursor-pointer select-none"
