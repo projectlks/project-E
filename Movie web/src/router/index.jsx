@@ -2,8 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home.jsx";
 import Start from "../pages/start.jsx";
 import Detial from "../pages/detial.jsx";
-import Login from "../pages/login.jsx";
-import SignUp from "../pages/signUp.jsx";
+import Login from "../pages/login/login.jsx";
 import Layout from "../pages/layout.jsx";
 import CreateAndEditForm from "../pages/createAndEditForm/createAndEditForm.jsx";
 import Movie from "../pages/dashBoard/movie.jsx";
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />
-      },
-      {
-        path: "/signup",
-        element: <SignUp />
       },
       {
         path: "/create",

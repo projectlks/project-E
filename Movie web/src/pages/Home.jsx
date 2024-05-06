@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Menu from "./menu";
 import Movie from "./movie";
 import Series from './series'
-import Serarch from "./searchTest";
+import Serarch from "./search";
 import image1 from "../img/img3.jpg"
 import menu from "../assets/menu.svg";
 import UpComing from "./upComing";
@@ -41,8 +41,6 @@ https: return (
       <Serarch />
     </div>
     <div className="flex">
-      {/* left */}
-
       {/* menu icon */}
       <div
         className="fixed right-3 top-3 p-1 rounded-full  md:hidden transition-all bg-blue-400 z-50 bg-opacity-20 hover:bg-opacity-80"
@@ -53,6 +51,7 @@ https: return (
       >
         <img src={menu} alt="menu" className="w-7 h-7 " />
       </div>
+      {/* left */}
 
       <div
         style={{ left: `${leftPosition}%` }}
@@ -62,12 +61,12 @@ https: return (
       </div>
 
       {/* right */}
-      <div className="flex w-full flex-col space-y-20 xl:h-screen h-[200%] overflow-auto">
+      <div className="flex w-full right flex-col space-y-20 xl:h-screen scrollbar-thin h-[200%] overflow-auto">
         <div className="right w-full h-auto min-h-screen ">
           <h1 className="text-4xl mx-5 font-bold">Movies</h1>
           <Movie url={url} filterValue={filterValue} />
         </div>
-        <div className="right w-full h-auto ">
+        <div className="right w-full h-auto min-h-screen">
           <h1 className="text-4xl mx-5 font-bold">Series</h1>
           <Series url={url} filterValue={filterValue} />
         </div>

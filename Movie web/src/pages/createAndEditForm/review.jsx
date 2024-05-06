@@ -10,11 +10,12 @@ export default function review({review, setReview}) {
             setReview(e.target.value);
           }}
           type="text"
-          name="review" // Changed name to descriptive one
-          id="review" // Changed ID to descriptive one
-          className={`block py-2.5  w-full text-sm   border-0 border-b-2  appearance-none text-white border-gray-600 focus:border-blue-800 focus:outline-none focus:ring-0 focus:bg-blue-900 focus:bg-opacity-20 transition-colors px-3 peer ${
+          name="review" 
+          id="review"
+          className={`block py-2.5  w-full text-sm  overflow-hidden   border-0 border-b-2  appearance-none text-white border-gray-600 focus:border-blue-800 focus:outline-none focus:ring-0 focus:bg-blue-900 focus:bg-opacity-20 transition-colors px-3 peer ${
             review ? "bg-blue-900 bg-opacity-20" : " bg-transparent"
           }`}
+          style={{    textWrap: 'none'}}
           placeholder=" "
           required
         />

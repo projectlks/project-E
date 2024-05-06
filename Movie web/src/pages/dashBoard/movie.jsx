@@ -5,6 +5,7 @@ import useSortAndFilter from "../../hooks/useSortAndFilter";
 export default function Movie() {
     const [genre, setGenre] = useState([])
     const [isSoft, setIsSoft] = useState(false)
+    const [deleteID, setDeleteID] = useState('')
 
   let { data } = useFetch(
     "https://api.themoviedb.org/3/trending/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
@@ -27,7 +28,7 @@ let navigate = useNavigate()
 let { finalData, searchValue, sortValue, setSearchValue , setSortValue } = useSortAndFilter();
 
   return (
-    <section className="w-full p-10 ">
+    <section className="w-full md:p-10 ">
       <div className="w-full px-4 py-2 border items-center flex justify-between border-blue-800">
         <h1 className="md:text-3xl xl:text-4xl text-2xl font-bold whitespace-nowrap">
           Movies - {data && data.results.length}
@@ -46,7 +47,7 @@ let { finalData, searchValue, sortValue, setSearchValue , setSortValue } = useSo
         {/* Sort by */}
         <div className="py-1 px-4 relative whitespace-nowrap">
           <div
-            className="text-xl cursor-pointer bg-gray-300 transition-all bg-opacity-80 hover:bg-opacity-100 text-gray-900 font-bold px-6 py-1 items-center space-x-3 rounded flex"
+            className="md:text-xl cursor-pointer bg-gray-300 transition-all bg-opacity-80 hover:bg-opacity-100 text-gray-900 font-bold px-6 py-1 items-center space-x-3 rounded flex"
             onClick={() => {
               setIsSoft(!isSoft);
             }}
@@ -151,7 +152,7 @@ let { finalData, searchValue, sortValue, setSearchValue , setSortValue } = useSo
                 </td>
 
                 <td className="px-6 py-3 border-r border-blue-500">
-                  {movie.release_date}{" "}
+                  {movie.release_date}
                 </td>
                 <td className="px-6 py-3 border-r border-blue-500">
                   {movie.genre_ids.slice(0, 1).map((g) => genre[g])}
@@ -159,14 +160,17 @@ let { finalData, searchValue, sortValue, setSearchValue , setSortValue } = useSo
                 <td className="px-6 py-3 border-r border-blue-500">
                   John Cena
                 </td>
-                <td className="px-6 py-3 border-r border-blue-500 flex space-x-3">
+                <td className="px-6 py-3  border-blue-500 flex space-x-3">
                   <p
                     className="px-3 text-sm py-1 bg-green-600 cursor-pointer transition-all hover:bg-green-700 rounded"
                     onClick={() => navigate(`/edit/${movie.id}`)}
                   >
                     Edit
                   </p>
-                  <p className="px-3 text-sm py-1 bg-red-600 cursor-pointer transition-all hover:bg-red-700 rounded">
+                  <p
+                    className="px-3 text-sm py-1 bg-red-600 cursor-pointer transition-all hover:bg-red-700 rounded"
+                    onClick={() => setDeleteID(movie.id)}
+                  >
                     Delete
                   </p>
                 </td>
@@ -175,6 +179,29 @@ let { finalData, searchValue, sortValue, setSearchValue , setSortValue } = useSo
           </tbody>
         </table>
       </div>
+{/* delete section */}
+      {deleteID && (
+        <section className="fixed top-0 w-screen h-screen flex-col bg-black bg-opacity-50 flex justify-center items-center ">
+          <div className="flex-col flex justify-center w-[400px] md:w-[500px] items-center bg-gray-200 text-gray-900 rounded-md py-6 px-8">
+            <h1 className="text-3xl">
+              Are you sure you want to delete this item?
+            </h1>
+            <p className="text-sm mt-2">
+              This action cannot be undone. Deleting this item will permanently
+              remove it from your records.
+            </p>
+            <div className="flex justify-end space-x-3 w-full mt-4">
+              <p className="px-3 py-1 bg-red-600 text-gray-100 rounded cursor-pointer hover:bg-red-700">Yes, Delete</p>
+              <p
+                className="px-3 py-1 border border-gray-600 rounded cursor-pointer hover:bg-gray-300"
+                onClick={() => setDeleteID("")}
+              >
+                Cancel
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
     </section>
   );
 }

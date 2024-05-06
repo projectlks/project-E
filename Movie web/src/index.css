@@ -2,21 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    text-wrap: balance;
 }
 
 .fade-enter {
     opacity: 0;
-transform: translateX(-100%);}
+}
 
 .fade-exit {
     opacity: 0;
-    transform: translateX(0%);
 }
 
 .fade-enter-active {
@@ -31,49 +28,57 @@ transform: translateX(-100%);}
 .fade-exit-active {
     transition: opacity 500ms;
 }
-/* aaa */
+
+/* scroll bar style */
 
 *::-webkit-scrollbar {
-    width: 5px;
-    /* Width of the scrollbar */
+    width: 0px;
 }
 
-/* Track */
 *::-webkit-scrollbar-track {
     background: #f1f1f1;
-    /* Color of the scrollbar track */
 }
 
-/* Handle */
 *::-webkit-scrollbar-thumb {
     background: #888;
-    /* Color of the scrollbar handle */
 }
 
-/* Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
     background: #555;
-    /* Color of the scrollbar handle when hovered */
 }
-/* for trend movie */
- .scrollbar-thin::-webkit-scrollbar {
-     height: 5px;
-     border-radius: 100%;
-     cursor: pointer;
- }
 
- /* Adjust scrollbar track color */
- .scrollbar-thin::-webkit-scrollbar-track {
-     background: #f1f1f1;
- }
+.scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+    border-radius: 100%;
+    cursor: pointer;
+}
 
- /* Adjust scrollbar thumb color */
- .scrollbar-thin::-webkit-scrollbar-thumb {
-     background: rgb(83, 83, 196);
-     border-radius: 2px;
- }
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: gray;
+}
 
- /* Adjust scrollbar thumb color on hover */
- .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-     background: rgb(32, 32, 155);
- }
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(83, 83, 196);
+    border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(32, 32, 155);
+}
+
+.right::-webkit-scrollbar {
+    width: 0;
+}
+
+.right::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.right::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+.right::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

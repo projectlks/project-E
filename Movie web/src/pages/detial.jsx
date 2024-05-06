@@ -35,12 +35,12 @@ export default function Detail() {
   }, [moviedata]);
   return (
     <>
-      {error && (
+      {!loading && error && (
         <h1 className="w-full text-center py-10 text-3xl">
           Oops...Page not found!
         </h1>
       )}
-      {!error && loading && (
+      {loading && (
         <div className="text-white w-full flex justify-center h-screen items-center ">
           <svg
             className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
