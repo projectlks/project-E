@@ -35,17 +35,7 @@
     width: 0px;
 }
 
-*::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
 
-*::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 
 .scrollbar-thin::-webkit-scrollbar {
     width: 5px;
@@ -69,16 +59,4 @@
 
 .right::-webkit-scrollbar {
     width: 0;
-}
-
-.right::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.right::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-.right::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }

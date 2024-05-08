@@ -39,7 +39,8 @@ let useSortAndFilter = () => {
     }
   }, [data, searchValue, sortValue]);
 
-  return { finalData, setSortValue, setSearchValue };
+  return { finalData,setFinalData, sortValue,
+     setSortValue, setSearchValue };
 };
 
 export default useSortAndFilter;

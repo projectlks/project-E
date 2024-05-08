@@ -45,7 +45,6 @@ const [year, setYear] = useState("");
       });
       setGenres(genre);
 
-      console.log(data);
     }
   }, [data]);
   return {

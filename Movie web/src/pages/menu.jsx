@@ -30,6 +30,9 @@ import movie from "../assets/movie.svg";
 import series from "../assets/series.svg";
 import user from "../assets/user.svg";
 import { Link } from 'react-router-dom';
+import {auth} from '../firebase'
+import { signOut } from 'firebase/auth';
+import { useNavigate } from "react-router";
 
 
 
@@ -50,7 +53,7 @@ function menu ({setUrl, setFilterValue}) {
     const value = localStorage.getItem("pf");
     return value !== null ? value : img1;
   });
-
+  const navigate = useNavigate();
 
   return (
     <section className="w-full border rounded-md min-h-full relative">
@@ -263,17 +266,24 @@ function menu ({setUrl, setFilterValue}) {
         <p>Login</p>
       </Link>
 
-      <Link to="/login">
-        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
+ 
+        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2" onClick={()=>{signOut(auth).then(navigate('/login'))}}>
           <img src={logout} alt="" className="w-6 h-6" />
           <p>Logout</p>
         </div>
-      </Link>
+
 
       <Link to="/create">
         <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
           <img src={editIcon} alt="" className="w-6 h-6" />
           <p>Create</p>
+        </div>
+      </Link>
+
+      <Link to="/movie">
+        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
+          <img src={editIcon} alt="" className="w-6 h-6" />
+          <p>Dash Board</p>
         </div>
       </Link>
     </section>
