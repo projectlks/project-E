@@ -1,35 +1,23 @@
-import React, { useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import useSortAndFilter from "../../hooks/useSortAndFilter";
+import useFirestore from "../../hooks/useFirestore";
+import plus from '../../assets/plus.svg'
+
 export default function Movie() {
-  const [genre, setGenre] = useState([]);
   const [isSoft, setIsSoft] = useState(false);
   const [deleteID, setDeleteID] = useState("");
 
-
-
-  let { data: genreData } = useFetch(
-    "https://api.themoviedb.org/3/genre/movie/list?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-  );
-
-  useEffect(() => {
-    let genres = {};
-    genreData &&
-      genreData.genres.forEach((g) => {
-        genres[g.id] = g.name;
-        setGenre(genres);
-      });
-  }, [genreData]);
-
   let navigate = useNavigate();
 
-  let { finalData,setFinalData, searchValue, sortValue, setSearchValue, setSortValue } =
+  let { finalData,setFinalData, searchValue, sortValue, setSearchValue, setSortValue, loading, error} =
     useSortAndFilter();
 
+let {deleteDocument} = useFirestore()
 
   return (
     <>
+      {/* <Account/> */}
       <section className="w-full md:p-10 p-2 ">
         {/* top  */}
         <div className="w-full py-4 xl:px-8 px-4 border items-center flex justify-between border-blue-800">
@@ -46,6 +34,16 @@ export default function Movie() {
             className="md:w-[50%] hidden md:block  px-6 py-2 cursor-pointer rounded-xl border-gray-50 bg-blue-500 bg-opacity-20 focus:border-blue-800 focus:bg-blue-900 focus:bg-opacity-20  border outline-none"
             placeholder=" Search movie here ... "
           />
+
+          <div
+            onClick={() => {
+              navigate("/create");
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1  rounded cursor-pointer flex items-center w-[150px] h-[41px] justify-evenly "
+          >
+            <img src={plus} alt="plus" className="h-full" />
+            <p>Add More</p>
+          </div>
 
           {/* Sort by */}
           <div className="py-1 px-4 relative whitespace-nowrap">
@@ -109,6 +107,7 @@ export default function Movie() {
             </div>
           </div>
         </div>
+
         {/* table */}
         <div className="relative overflow-x-auto border border-blue-800 py-4 xl:px-8 px-4 shadow-md rounded">
           <table className="w-full text-sm text-left rounded-sm text-gray-50 border-collapse">
@@ -158,17 +157,17 @@ export default function Movie() {
                         navigate(`/detailMovie/${movie.id}`);
                       }}
                     >
-                      {movie.original_title}
+                      {movie.title}
                     </td>
 
                     <td className="px-6 py-3 border-r border-blue-500">
-                      {movie.release_date}
+                      {movie.date}
                     </td>
                     <td className="px-6 py-3 border-r border-blue-500">
-                      {movie.genre_ids.slice(0, 1).map((g) => genre[g])}
+                      {movie.genres && movie.genres.slice(0, 1).map((g) => g)}
                     </td>
                     <td className="px-6 py-3 border-r border-blue-500">
-                      John Cena
+                      {movie.director}
                     </td>
                     <td className="px-6 py-3  border-blue-500 flex space-x-3">
                       <p
@@ -191,6 +190,33 @@ export default function Movie() {
         </div>
       </section>
 
+      {/* {error} */}
+      {error && <p> {error}</p>}
+      {/* loading */}
+      {loading && (
+        <div className="text-white absolute top-0 w-full flex justify-center h-screen items-center ">
+          <svg
+            className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        </div>
+      )}
       {/* delete section */}
       {deleteID && (
         <form
@@ -209,7 +235,7 @@ export default function Movie() {
             </p>
             <div className="flex justify-end space-x-3 w-full mt-4">
               <p
-                className="px-3 py-1 border border-gray-600 rounded cursor-pointer hover:bg-gray-300"
+                className="px-3 py-1 transition-all border hover:border-gray-600 rounded cursor-pointer hover:bg-gray-300"
                 onClick={() => setDeleteID("")}
               >
                 Cancel
@@ -221,6 +247,8 @@ export default function Movie() {
                   setFinalData((prev) =>
                     prev.filter((data) => data.id !== deleteID)
                   );
+deleteDocument('movie',deleteID)
+           
                 }}
               >
                 Yes, Delete

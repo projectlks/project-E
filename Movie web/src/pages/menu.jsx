@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
  import img1 from "../data/profile/pf1.jfif";
  import img2 from "../data/profile/pf2.jfif";
  import img3 from "../data/profile/pf3.jfif";
@@ -33,7 +33,7 @@ import { Link } from 'react-router-dom';
 import {auth} from '../firebase'
 import { signOut } from 'firebase/auth';
 import { useNavigate } from "react-router";
-
+import { AuthContext } from '../contexts/AuthContext';
 
 
 function menu ({setUrl, setFilterValue}) {
@@ -55,6 +55,7 @@ function menu ({setUrl, setFilterValue}) {
   });
   const navigate = useNavigate();
 
+  let {user} = useContext(AuthContext)
   return (
     <section className="w-full border rounded-md min-h-full relative">
       <div className="w-[90%] mx-auto flex flex-col justify-center items-center border-b-2 py-2 relative">
@@ -258,20 +259,27 @@ function menu ({setUrl, setFilterValue}) {
 
       <div className="px-3 py-3 text-sm">Custom</div>
 
-      <Link
-        to="/login"
-        className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80 hover:bg-blue-900 mb-2"
-      >
-        <img src={user} alt="" className="w-6 h-6" />
-        <p>Login</p>
-      </Link>
+      {!user && (
+        <Link
+          to="/login"
+          className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80 hover:bg-blue-900 mb-2"
+        >
+          <img src={user} alt="" className="w-6 h-6" />
+          <p>Login</p>
+        </Link>
+      )}
 
- 
-        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2" onClick={()=>{signOut(auth).then(navigate('/login'))}}>
+      {user && (
+        <div
+          className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2"
+          onClick={() => {
+            signOut(auth).then(navigate("/login"));
+          }}
+        >
           <img src={logout} alt="" className="w-6 h-6" />
           <p>Logout</p>
         </div>
-
+      )}
 
       <Link to="/create">
         <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">

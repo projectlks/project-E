@@ -16,9 +16,11 @@ import Review from "./review";
 import Title from "./title";
 import left from "../../assets/left.svg";
 import { suggestGenres } from "./genresArray.jsx";
-// import "./createAndEdit.css";
 
 import useEdit from "../../hooks/useEdit.jsx";
+import {  doc, updateDoc } from "firebase/firestore";
+import { database } from "../../firebase/index.jsx";
+import useFirestore from "../../hooks/useFirestore.jsx";
 
 export default function CreateAndEditForm() {
   const [type, setType] = useState("");
@@ -36,6 +38,8 @@ export default function CreateAndEditForm() {
   let { id } = useParams();
 
   let {
+    loading,
+    error,
     backDrop,
     company,
     director,
@@ -65,167 +69,235 @@ export default function CreateAndEditForm() {
     setYear,
     setDay
   } = useEdit(id);
+let data = {
+  backDrop,
+  company,
+  director,
+  duration,
+  genres,
+  language,
+  link,
+  poster,
+  rating,
+  review,
+  title,
+  date: `${year}-${month}-${day}`
+};
 
+let { addCollection } = useFirestore();
+const createFun = () => {
+  addCollection("movie", data);
+  navigate("/movie");
+};
+
+const editFun = async () => {
+
+    let ref = doc(database, "movie", id);
+    await updateDoc(ref, data);
+    navigate("/movie");
+  
+};
   return (
     <>
       <section className="w-full">
-        <form className="max-w-lg w-[90%] mx-auto h-screen flex items-center justify-center overflow-y-auto overflow-x-hidden transition-all transform  relative ">
-          <div
-            className={`${
-              !switchForm ? "left-0 delay-300" : "-left-full"
-            } w-full transition-all h-auto bg-blue-800 bg-opacity-20 p-6 md:p-8 absolute rounded-lg`}
-          >
-            <h1 className="text-4xl text-bold font-bold mb-5">Create Form</h1>
-
-            {/* title input */}
-            <Title title={title} setTitle={setTitle} />
-
-            {/* type choose */}
-            <div className="flex w-[200px] justify-between bg-blue-500 bg-opacity-20 rounded-lg space-x-4 px-4 py-2 mb-6">
-              <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  name="type"
-                  id="Movie"
-                  value="Movie"
-                  checked={selectedValue === "Movie"}
-                  onChange={handleChange}
-                  className="cursor-pointer"
-                />
-                <label
-                  htmlFor="Movie"
-                  className="cursor-pointer h-full select-none"
-                >
-                  Movie
-                </label>
-              </div>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="radio"
-                  name="type"
-                  id="Series"
-                  value="Series"
-                  checked={selectedValue === "Series"}
-                  onChange={handleChange}
-                  className="cursor-pointer"
-                />
-                <label
-                  htmlFor="Series"
-                  className="cursor-pointer h-full select-none"
-                >
-                  Series
-                </label>
-              </div>
-            </div>
-            {/* Review */}
-            <Review review={review} setReview={setReview} />
-
-            {/* for genres */}
-            <Genres
-              genres={genres}
-              setGenres={setGenres}
-              type={type}
-              setType={setType}
-              suggestGenres={suggestGenres}
-            />
-            <div className="grid grid-cols-2 gap-6">
-              {/* language */}
-              <Language language={language} setLanguage={setLanguage} />
-              {/* rating */}
-              <Link link={link} setLink={setLink} />
-            </div>
-            {/* Date */}
-            <Date
-              year={year}
-              setYear={setYear}
-              month={month}
-              setMonth={setMonth}
-              day={day}
-              setDay={setDay}
-              setSwitchForm={setSwitchForm}
-            />
+        {error && (
+          <div className="w-full h-screen flex justify-center items-center">
+            <p className="text-red-700 text-xl md:text-3xl  font-bold w-1/2 text-center">
+              {error}
+            </p>
           </div>
-          {/* seconds Part */}
+        )}
 
-          <div
-            className={`${
-              switchForm ? "right-0 delay-300" : "-right-full"
-            } w-full transition-all h-auto bg-blue-800  bg-opacity-20 p-6 md:p-8 absolute rounded-lg`}
-          >
-            <h1 className="text-4xl text-bold font-bold mb-5">Second part</h1>
+        {loading && (
+          <div className="text-white absolute top-0 w-full flex justify-center h-screen items-center ">
+            <svg
+              className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </div>
+        )}
+        {!error && !loading && (
+          <form className="max-w-lg w-[90%] mx-auto h-screen flex items-center justify-center overflow-y-auto overflow-x-hidden transition-all transform  relative ">
+            <div
+              className={`${
+                !switchForm ? "left-0 delay-300" : "-left-full"
+              } w-full transition-all h-auto bg-blue-800 bg-opacity-20 p-6 md:p-8 absolute rounded-lg`}
+            >
+              <h1 className="text-4xl text-bold font-bold mb-5">Create Form</h1>
 
-            <div className="parent w-full">
-              <div className="flex w-full flex-nowrap gap-6">
+              {/* title input */}
+              <Title title={title} setTitle={setTitle} />
+
+              {/* type choose */}
+              <div className="flex w-[200px] justify-between bg-blue-500 bg-opacity-20 rounded-lg space-x-4 px-4 py-2 mb-6">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="type"
+                    id="Movie"
+                    value="Movie"
+                    checked={selectedValue === "Movie"}
+                    onChange={handleChange}
+                    className="cursor-pointer"
+                  />
+                  <label
+                    htmlFor="Movie"
+                    className="cursor-pointer h-full select-none"
+                  >
+                    Movie
+                  </label>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="type"
+                    id="Series"
+                    value="Series"
+                    checked={selectedValue === "Series"}
+                    onChange={handleChange}
+                    className="cursor-pointer"
+                  />
+                  <label
+                    htmlFor="Series"
+                    className="cursor-pointer h-full select-none"
+                  >
+                    Series
+                  </label>
+                </div>
+              </div>
+              {/* Review */}
+              <Review review={review} setReview={setReview} />
+
+              {/* for genres */}
+              <Genres
+                genres={genres}
+                setGenres={setGenres}
+                type={type}
+                setType={setType}
+                suggestGenres={suggestGenres}
+              />
+              <div className="grid grid-cols-2 gap-6">
+                {/* language */}
+                <Language language={language} setLanguage={setLanguage} />
                 {/* rating */}
-                <div>
-                  <Rating
-                    rating={rating}
-                    setRating={setRating}
-                    className="w-[200px]"
+                <Link link={link} setLink={setLink} />
+              </div>
+              {/* Date */}
+              <Date
+                year={year}
+                setYear={setYear}
+                month={month}
+                setMonth={setMonth}
+                day={day}
+                setDay={setDay}
+                setSwitchForm={setSwitchForm}
+              />
+            </div>
+            {/* seconds Part */}
+
+            <div
+              className={`${
+                switchForm ? "right-0 delay-300" : "-right-full"
+              } w-full transition-all h-auto bg-blue-800  bg-opacity-20 p-6 md:p-8 absolute rounded-lg`}
+            >
+              <h1 className="text-4xl text-bold font-bold mb-5">Second part</h1>
+
+              <div className="parent w-full">
+                <div className="flex w-full flex-nowrap gap-6">
+                  {/* rating */}
+                  <div>
+                    <Rating
+                      rating={rating}
+                      setRating={setRating}
+                      className="w-[200px]"
+                    />
+                  </div>
+
+                  {/* director */}
+                  <div className="w-full">
+                    <Director director={director} setDirector={setDirector} />
+                  </div>
+                </div>
+
+                {/* Image  */}
+                <Image
+                  poster={poster}
+                  setPoster={setPoster}
+                  backDrop={backDrop}
+                  setBackDrop={setBackDrop}
+                />
+
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Duration */}
+                  <Duration duration={duration} setDuration={setDuration} />
+                  {/* rating */}
+                  <ProductionCompany
+                    company={company}
+                    setCompany={setCompany}
                   />
                 </div>
+                {/* Cast */}
+                <Cast
+                  cast={cast}
+                  setCast={setCast}
+                  member={member}
+                  setMember={setMember}
+                />
+              </div>
 
-                {/* director */}
-                <div className="w-full">
-                  <Director director={director} setDirector={setDirector} />
+              <div className="w-full h-8 flex space-x-3 items-center">
+                {/* Prev page */}
+
+                <svg
+                  onClick={() => {
+                    setSwitchForm(false);
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="ml-3 -scale-x-100 mr-3 hover:mr-2 h-full  hover:text-red-600 transition-all cursor-pointer"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                  />
+                </svg>
+
+                <div
+                  className="w-full py-2 cursor-pointer hover:bg-opacity-30 font-bold rounded-lg bg-blue-700 bg-opacity-20 text-center"
+                  onClick={() => {
+                    // completeFun();
+                    console.log(id ? "edit" : "create");
+                    {
+                      id ? editFun() : createFun();
+                    }
+                  }}
+                >
+                  Complete
                 </div>
               </div>
-
-              {/* Image  */}
-              <Image
-                poster={poster}
-                setPoster={setPoster}
-                backDrop={backDrop}
-                setBackDrop={setBackDrop}
-              />
-
-              <div className="grid grid-cols-2 gap-6">
-                {/* Duration */}
-                <Duration duration={duration} setDuration={setDuration} />
-                {/* rating */}
-                <ProductionCompany company={company} setCompany={setCompany} />
-              </div>
-              {/* Cast */}
-              <Cast
-                cast={cast}
-                setCast={setCast}
-                member={member}
-                setMember={setMember}
-              />
             </div>
-
-            <div className="w-full h-8 flex space-x-3 items-center">
-              {/* Prev page */}
-
-              <svg
-                onClick={() => {
-                  setSwitchForm(false);
-                }}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="ml-3 -scale-x-100 mr-3 hover:mr-2 h-full  hover:text-red-600 transition-all cursor-pointer"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-                />
-              </svg>
-
-              <div
-                className="w-full py-2 cursor-pointer hover:bg-opacity-30 font-bold rounded-lg bg-blue-700 bg-opacity-20 text-center"
-                onClick={() => {
-                  completeFun();
-                }}
-              >
-                Complete
-              </div>
-            </div>
-          </div>
-        </form>
+          </form>
+        )}
 
         <img
           src={left}

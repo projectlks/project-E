@@ -1,35 +1,32 @@
-
 import { useEffect, useState } from "react";
-import useFetch from "./useFetch";
+import { collection, getDocs } from "firebase/firestore";
+import { database } from "../firebase";
+import useFirestore from "./useFirestore";
 
-let useSortAndFilter = () => {
+const useSortAndFilter = () => {
   const [finalData, setFinalData] = useState([]);
   const [sortValue, setSortValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  let { data } = useFetch(
-    "https://api.themoviedb.org/3/trending/movie/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-  );
+
+let {getCollection} = useFirestore()
+let { loading, error, data } = getCollection("movie");
 
   useEffect(() => {
-    if (data && data.results) {
-      let filteredData = data.results;
+    if (data) {
+      let filteredData = [...data];
 
       if (searchValue) {
         filteredData = filteredData.filter((d) =>
-          d.original_title.toLowerCase().includes(searchValue.toLowerCase())
+          d.title.toLowerCase().includes(searchValue.toLowerCase())
         );
       }
 
       if (sortValue === "original_title") {
-        filteredData.sort((a, b) =>
-          a.original_title.localeCompare(b.original_title)
-        );
+        filteredData.sort((a, b) => a.title.localeCompare(b.title));
       }
       if (sortValue === "release_date") {
-        filteredData.sort((a, b) =>
-          a.release_date.localeCompare(b.release_date)
-        );
+        filteredData.sort((a, b) => a.date.localeCompare(b.date));
       }
       if (sortValue === "id") {
         filteredData.sort((a, b) => a.id - b.id);
@@ -39,8 +36,15 @@ let useSortAndFilter = () => {
     }
   }, [data, searchValue, sortValue]);
 
-  return { finalData,setFinalData, sortValue,
-     setSortValue, setSearchValue };
+  return {
+    finalData,
+    setFinalData,
+    sortValue,
+    setSortValue,
+    setSearchValue,
+    loading,
+    error
+  };
 };
 
 export default useSortAndFilter;

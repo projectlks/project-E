@@ -1,53 +1,73 @@
-
 import { useEffect, useState } from "react";
-import useFetch from "./useFetch";
+import { doc, getDoc } from "firebase/firestore";
+import { database } from "../firebase";
 
 const useEdit = (id) => {
-
-
-const [backDrop, setBackDrop] = useState("");
-const [company, setCompany] = useState("");
-const [day, setDay] = useState("");
-const [director, setDirector] = useState("");
-const [duration, setDuration] = useState("");
-const [genres, setGenres] = useState([]);
-const [language, setLanguage] = useState("");
-const [link, setLink] = useState("");
-const [month, setMonth] = useState("");
-const [poster, setPoster] = useState("");
-const [rating, setRating] = useState("");
-const [review, setReview] = useState("");
-const [title, setTitle] = useState("");
-const [year, setYear] = useState("");
-
-
-
-  const { data } = useFetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
-  );
+  const [backDrop, setBackDrop] = useState("");
+  const [company, setCompany] = useState("");
+  const [director, setDirector] = useState("");
+  const [duration, setDuration] = useState("");
+  const [genres, setGenres] = useState([]);
+  const [language, setLanguage] = useState("");
+  const [link, setLink] = useState("");
+  const [month, setMonth] = useState("");
+  const [poster, setPoster] = useState("");
+  const [rating, setRating] = useState("");
+  const [review, setReview] = useState("");
+  const [title, setTitle] = useState("");
+  const [year, setYear] = useState("");
+  const [day, setDay] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (data) {
-      setTitle(data.original_title);
-      setReview(data.overview);
-      setPoster(data.poster_path);
-      setBackDrop(data.backdrop_path);
-      setYear(data.release_date.slice(0,4));
-      setMonth(data.release_date.slice(5, 7));
-      setDay(data.release_date.slice(8,10))
-      setRating(data.vote_average);
-      setDuration(data.runtime);
-      setCompany(data.production_companies);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const docRef = doc(database, 'movie', id);
+        const docSnap = await getDoc(docRef);
+           setLoading(false);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setTitle(data.title || "");
+          setReview(data.review || "");
+          setPoster(data.poster || "");
+          setBackDrop(data.backDrop || "");
+          setRating(data.vote_average || "");
+          setDuration(data.runtime || "");
+          setCompany(data.company || "");
+          setLanguage(data.language || "");
+          setLink(data.link || "");
+          setRating(data.rating || "");
+          setDirector(data.director || "");
+          setDuration(data.duration || "");
+          setCompany(data.company || "");
+          setGenres(data.genres || []);
+          if (data.date) {
+            setYear(data.date.slice(0, 4));
+            setMonth(data.date.slice(5, 7));
+            setDay(data.date.slice(8, 10));
+          }
+          setError(null);
+        } else {
+          setError("Oops! Something went wrong. Please try again later.");
+          setLoading(false);
 
-      let genre = [];
-      data.genres.forEach((g) => {
-        genre.push(g.name);
-      });
-      setGenres(genre);
-
+        }
+      } catch (error) {
+        setError("Oops! Something went wrong. Please try again later.");
+        setLoading(false)
+      } 
+    };
+    
+    if (id) {
+      fetchData();
     }
-  }, [data]);
+  }, [id]);
+
   return {
+    error,
+    loading,
     backDrop,
     company,
     director,
@@ -62,7 +82,7 @@ const [year, setYear] = useState("");
     title,
     year,
     day,
-    setBackDrop,
+  setBackDrop,
     setCompany,
     setDirector,
     setDuration,
