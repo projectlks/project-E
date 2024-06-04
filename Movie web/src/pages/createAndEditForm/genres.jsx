@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react'
 import plus from "../../assets/plus.svg";
 import X from "../../assets/x.svg";
 import useAutoComplete from '../../hooks/useAutoComplete';
-export default function ({genres, setGenres, type, setType, suggestGenres}) {
+import { suggestGenres } from './genresArray';
+
+export default function ({genres, setGenres}) {
+  const [type, setType] = useState("");
 
   const [isDelete, setIsDelete] = useState(false)
       let { handleKeys, selectIndex, filterArray } = useAutoComplete(

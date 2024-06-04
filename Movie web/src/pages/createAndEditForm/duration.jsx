@@ -1,6 +1,8 @@
 import React from 'react'
+import useEdit from '../../hooks/useEdit';
 
-export default function duration({duration, setDuration }) {
+export default function duration() {
+  let {duration, setDuration } = useEdit()
   return (
     <>
       <div className=" space-x-3 z-0 w-full flex items-center group mb-6">

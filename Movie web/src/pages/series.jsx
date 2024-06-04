@@ -16,8 +16,7 @@ const Movie = ({ filterValue }) => {
   const [genresForTv, setGenresForTv] = useState({});
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const handleWidth = (size) => {
-    let perPage = 10; // Default value for larger screens
-
+    let perPage = 10; 
     if (size < 600) {
       perPage = 6;
     } else if (size < 1000) {
@@ -87,11 +86,7 @@ const Movie = ({ filterValue }) => {
     }
   };
 
-  // console.log("total pages is :", totalPages)
-  // console.log("current page is :", currentPage)
-  // new Date().getFullYear()
-  // new Date().getMonth() + 1
-  // new Date().getDate()
+
   return (
     <>
       {error && <h1>{error}</h1>}
@@ -120,10 +115,10 @@ const Movie = ({ filterValue }) => {
         </div>
       )}
       {!error && !loading && (
-        <section className="relative md:min-h-screen h-auto  pb-[90px]">
+        <section className="relative  h-auto  pb-[90px]">
           <SwitchTransition>
             <CSSTransition timeout={300} classNames="fade" key={startIndex}>
-              <div className="w-full  grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 px-3 mt-3 md:px-5 ">
+              <div className="w-full  grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6 px-3 mt-3 md:px-5 ">
                 {data &&
                   data.results &&
                   (filterValue !== ""
@@ -133,12 +128,11 @@ const Movie = ({ filterValue }) => {
                     : data.results.slice(startIndex, endIndex)
                   ).map((m) => (
                     <Link to={`/detailSeries/${m.id}`} key={m.id}>
-                      <div className="relative group">
+                      <div className="relative group w-[90%] mx-auto">
                         <img
                           src={`https://image.tmdb.org/t/p/w500${m.poster_path}`}
-                          // https://image.tmdb.org/t/p/w500/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg
                           alt={`${m.title} Poster`}
-                          className="w-full rounded-xl transition-all group-hover:brightness-[30%] group-hover:scale-110"
+                          className="w-full rounded-xl transition-all group-hover:brightness-[30%] group-hover:scale-105"
                         />
                         <p className="absolute top-2 right-2 px-3 py-1 rounded-full bg-black text-white bg-opacity-50 flex items-center">
                           <img
@@ -154,27 +148,24 @@ const Movie = ({ filterValue }) => {
                             Series
                           </p>
                         )}
-                        <h1 className="absolute  text-2xl whitespace-nowrap overflow-hidden overflow-ellipsis w-full px-3 top-[90%] group-hover:top-[50%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease left-0">
-                          {m.title} {m.name}
+                        <h1 className="absolute  text-xl whitespace-nowrap overflow-hidden overflow-ellipsis w-full px-3 top-[90%] group-hover:top-[50%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease left-0">
+                          {m.name}
                         </h1>
-                        <p className="absolute top-[90%] text-xl group-hover:top-[60%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease left-3 delay-200 flex items-center ">
+                        <p className="absolute top-[90%] text-md group-hover:top-[60%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease left-3 delay-200 flex items-center ">
                           <img src={star} alt="star" className="w-4 h-4 mr-1" />
-                          {m.vote_average} |{" "}
-                          {(m.release_date || m.first_air_date)?.slice(0, 4)}
+                          {m.vote_average} | {m.first_air_date?.slice(0, 4)}
                         </p>
 
-                        <div className="absolute w-full px-3 text-base top-[90%] left-0 group-hover:top-[69%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease delay-300 flex items-center whitespace-nowrap overflow-hidden space-x-2 overflow-ellipsis">
+                        <div className="absolute w-[90%] px-3 text-base top-[90%] left-0 group-hover:top-[69%] opacity-0 text-white group-hover:opacity-100 transition-all duration-4000 ease delay-300 flex items-center whitespace-nowrap overflow-hidden space-x-2 overflow-ellipsis">
                           {genresForTv &&
                             m.genre_ids &&
-                            m.genre_ids.slice(0, 2).map((genreId, index) => (
-                              <span key={genreId}>
-                                {genresForTv[genreId]}
-                                {m.media_type &&
-                                  m.media_type === "tv" &&
-                                  genresForTv[genreId]}
-                                {index < m.genre_ids.length - 1 ? ", " : "."}
-                              </span>
-                            ))}
+                            m.genre_ids
+                              .slice(0, 1)
+                              .map((genreId) => (
+                                <span key={genreId}>
+                                  {genresForTv[genreId]}.
+                                </span>
+                              ))}
                         </div>
                       </div>
                     </Link>

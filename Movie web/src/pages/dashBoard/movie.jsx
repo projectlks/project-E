@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import useSortAndFilter from "../../hooks/useSortAndFilter";
 import useFirestore from "../../hooks/useFirestore";
 import plus from '../../assets/plus.svg'
-
+import PageLoading from '../../components/loading/PageLoading'
 export default function Movie() {
   const [isSoft, setIsSoft] = useState(false);
   const [deleteID, setDeleteID] = useState("");
@@ -35,25 +35,27 @@ let {deleteDocument} = useFirestore()
             placeholder=" Search movie here ... "
           />
 
-          <div
+          <button
             onClick={() => {
               navigate("/create");
             }}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1  rounded cursor-pointer flex items-center w-[150px] h-[41px] justify-evenly "
+            className="relative inline-flex bg-transparent  h-[42px] items-center justify-center p-0.5  overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-300 to-blue-600 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none "
           >
-            <img src={plus} alt="plus" className="h-full" />
-            <p>Add More</p>
-          </div>
+            <span className="relative w-[130px] h-full flex items-center justify-evenly py-[6px] text-gray-50 transition-all ease-in  bg-black rounded-md group-hover:text-gray-900 group-hover:bg-opacity-0">
+              <img src={plus} alt="plus" className="h-full" />
+              <p>Add More</p>
+            </span>
+          </button>
 
           {/* Sort by */}
-          <div className="py-1 px-4 relative whitespace-nowrap">
+          <div className="py-1 px-4 hidden xl:inline-block relative whitespace-nowrap">
             <div
               className="md:text-xl cursor-pointer bg-gray-300 transition-all bg-opacity-80 hover:bg-opacity-100 text-gray-900 font-bold px-6 py-1 items-center space-x-3 rounded flex"
               onClick={() => {
                 setIsSoft(!isSoft);
               }}
             >
-              <h1>Sort By {sortValue}</h1>
+              <h1>Sort By </h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -194,28 +196,7 @@ let {deleteDocument} = useFirestore()
       {error && <p> {error}</p>}
       {/* loading */}
       {loading && (
-        <div className="text-white absolute top-0 w-full flex justify-center h-screen items-center ">
-          <svg
-            className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-700 "
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        </div>
+       <PageLoading/>
       )}
       {/* delete section */}
       {deleteID && (
@@ -247,8 +228,7 @@ let {deleteDocument} = useFirestore()
                   setFinalData((prev) =>
                     prev.filter((data) => data.id !== deleteID)
                   );
-deleteDocument('movie',deleteID)
-           
+                  deleteDocument("movie", deleteID);
                 }}
               >
                 Yes, Delete
@@ -260,3 +240,5 @@ deleteDocument('movie',deleteID)
     </>
   );
 }
+
+

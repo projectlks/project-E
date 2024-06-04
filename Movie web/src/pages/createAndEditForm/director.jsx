@@ -13,7 +13,6 @@ export default function director({ director, setDirector }) {
             value={director}
             onChange={(e) => {
               let value = e.target.value;
-              // if (value >= 0 && value <= 10) {
               setDirector(value);
             }}
             type="text"

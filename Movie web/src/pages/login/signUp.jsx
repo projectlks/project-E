@@ -36,21 +36,23 @@ export default function signUp({ setIsSwitch }) {
   let { loading, error, signUp } = useSignup();
 
   const signupFun = async () => {
-    if (username && email && password) {
+    if ( email && password) {
       let user = await signUp(email, password);
       if (user) {
         navigate("/home");
       }
     } else {
-      if (!username) setUsernameError(true);
+      // if (!username) setUsernameError(true);
       if (!email) setEmailError(true);
       if (!password) setPasswordError(true);
     }
   };
   return (
     <>
-      <h1 className="text-4xl font-bold w-full mb-2 text-center">Join Us!</h1>
-      <p className="mb-6 text-lg font-semibold text-blue-500">
+      <h1 className="md:text-4xl text-3xl font-bold w-full mb-2 text-center">
+        Join Us!
+      </h1>
+      <p className="mb-6 w-full text-ellipsis overflow-hidden whitespace-nowrap text-lg font-semibold text-blue-500">
         Start your journey for free! It's quick and easy!
       </p>
 
@@ -112,10 +114,10 @@ export default function signUp({ setIsSwitch }) {
           <h1> Sign Up</h1>
         </button>
       </div>
-      <div className="flex space-x-1 justify-center">
+      <div className="flex md:text-base text-xs space-x-1 justify-center">
         <p>If you have an account.</p>
         <p
-          className="cursor-pointer hover:text-blue-500"
+          className="cursor-pointer hover:text-blue-800 transition-all"
           onClick={() => setIsSwitch(false)}
         >
           Log In

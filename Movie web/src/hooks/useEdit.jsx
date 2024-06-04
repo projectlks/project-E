@@ -19,6 +19,8 @@ const useEdit = (id) => {
   const [day, setDay] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+     const [posterPrev, setPosterPrev] = useState(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +44,7 @@ const useEdit = (id) => {
           setDirector(data.director || "");
           setDuration(data.duration || "");
           setCompany(data.company || "");
+          // setPosterPrev(data.poster || '')
           setGenres(data.genres || []);
           if (data.date) {
             setYear(data.date.slice(0, 4));
@@ -82,6 +85,7 @@ const useEdit = (id) => {
     title,
     year,
     day,
+    posterPrev, setPosterPrev,
   setBackDrop,
     setCompany,
     setDirector,

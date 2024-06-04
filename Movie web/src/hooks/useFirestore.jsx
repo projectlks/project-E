@@ -5,40 +5,45 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  getDocs
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query
 } from "firebase/firestore";
 import { database } from "../firebase";
 export default function useFirestore() {
   // to get collection data
-  let getCollection = (collectionName, id) => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [data, setData] = useState([]);
+    let getCollection = (collectionName) => {
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState(null);
+      const [data, setData] = useState([]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
+      useEffect(() => {
+        const fetchData = async () => {
           setLoading(true);
           const ref = collection(database, collectionName);
-          const snapshot = await getDocs(ref);
-          const collectionData = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setData(collectionData);
-          setLoading(false);
-          setError("");
-        } catch (error) {
-          setError(error);
-          setLoading(false);
-        }
-      };
+          const q = query(ref, orderBy('date','desc'));
+          onSnapshot(q, (docs) => {
+            if (docs.empty) {
+              setError(error);
+              setLoading(false);
+            } else {
+              let collectionData = [];
+              docs.forEach((doc) => {
+                let cmt = { id: doc.id, ...doc.data() };
+                collectionData.push(cmt);
+              });
+              setData(collectionData);
+              setLoading(false);
+              setError("");
+            }
+          });
+        };
 
-      fetchData();
-    }, []);
-    return { loading, error, data };
-  };
-
+        fetchData();
+      }, []);
+      return { loading, error, data };
+    };
   // to get document data
   let getDocument = (collectionName, id) => {
     const [data, setData] = useState(null);
@@ -78,3 +83,11 @@ export default function useFirestore() {
 
   return { getCollection, getDocument, addCollection, deleteDocument };
 }
+
+
+
+
+
+
+
+

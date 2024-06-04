@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import plus from '../../assets/plus.svg'
 import X from "../../assets/x.svg";
 
-export default function cast({ cast, setCast, }) {
+export default function cast({ cast, setCast }) {
   const [isDelete, setIsDelete] = useState(false);
   const [text, setText] = useState('')
   return (

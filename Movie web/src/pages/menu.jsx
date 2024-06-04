@@ -1,26 +1,14 @@
-import React, { useContext, useState } from 'react'
- import img1 from "../data/profile/pf1.jfif";
- import img2 from "../data/profile/pf2.jfif";
- import img3 from "../data/profile/pf3.jfif";
- import img4 from "../data/profile/pf4.jfif";
- import img5 from "../data/profile/pf5.jfif";
- import img6 from "../data/profile/pf6.jfif";
- import img7 from "../data/profile/pf7.jfif";
- import img8 from "../data/profile/pf8.jfif";
- import img9 from "../data/profile/pf9.jfif";
- import img10 from "../data/profile/pf10.jfif";
- import img11 from "../data/profile/pf11.jfif";
- import img12 from "../data/profile/pf12.jfif";
- import img13 from "../data/profile/pf13.jfif";
- import img14 from "../data/profile/pf14.jfif";
- import img15 from "../data/profile/pf15.jfif";
- import img16 from "../data/profile/pf16.jfif";
- import img17 from "../data/profile/pf17.jfif";
- import img18 from "../data/profile/pf18.jfif";
- import img19 from "../data/profile/pf19.jfif";
- import img20 from "../data/profile/pf20.jfif";
-
-//  icons
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
+import { AuthContext } from "../contexts/AuthContext";
+import MenuButton from "../components/menuButton";
+import FilterOption from "../components/FilterOption";
+// Import profile images
+import images from "../components/Image";
+import img1 from "../data/profile/pf1.jfif";
+// Import icons
 import all from "../assets/all.svg";
 import correct from "../assets/correct.svg";
 import dropDown from "../assets/dropDown.svg";
@@ -28,19 +16,15 @@ import editIcon from "../assets/edit.svg";
 import logout from "../assets/logout.svg";
 import movie from "../assets/movie.svg";
 import series from "../assets/series.svg";
-import user from "../assets/user.svg";
-import { Link } from 'react-router-dom';
-import {auth} from '../firebase'
-import { signOut } from 'firebase/auth';
-import { useNavigate } from "react-router";
-import { AuthContext } from '../contexts/AuthContext';
+import useFetch from "../hooks/useFetch";
+import useMainUrl from "../hooks/useMainUrl";
+
+// chnage link
 
 
-function menu ({setUrl, setFilterValue}) {
-  const images = [
-    img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
-    img11, img12, img13, img14, img15, img16, img17, img18, img19, img20
-  ];
+
+function Menu({ setUrl, setLeftPosition }) {
+  const [activeFilter, setActiveFilter] = useState("");
   const [moviesFilter, setMoviesFilter] = useState(0);
   const [seriesFilter, setSeriesFilter] = useState(0);
   const [nameEdit, setNameEdit] = useState(false);
@@ -53,19 +37,57 @@ function menu ({setUrl, setFilterValue}) {
     const value = localStorage.getItem("pf");
     return value !== null ? value : img1;
   });
-  const navigate = useNavigate();
 
-  let {user} = useContext(AuthContext)
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  
+  let { changeLink } = useMainUrl();
+
+  const filterFun = (genID, type, genType) => {
+    changeLink(
+      `https://api.themoviedb.org/3/discover/${genType}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e&with_genres=${genID}`
+    );
+    setLeftPosition(-100);
+    setActiveFilter(type);
+  };
+
+  let { data: movieGenres } = useFetch(
+    `https://api.themoviedb.org/3/genre/movie/list?language=en%27&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
+  let { data: tvGenres } = useFetch(
+    `https://api.themoviedb.org/3/genre/tv/list?language=en%27&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
+
+
   return (
-    <section className="w-full border rounded-md min-h-full relative">
-      <div className="w-[90%] mx-auto flex flex-col justify-center items-center border-b-2 py-2 relative">
+    <menu className="w-full border rounded-md min-h-full relative overflow-visible">
+      {edit && (
+        <div className="absolute w-[90%] mx-auto left-0 right-0 gap-2 p-2 bg-black border bg-opacity-80 z-50 top-40 rounded-lg grid grid-cols-5">
+          {images.map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              className={`w-[100%] rounded-sm hover:brightness-100 ${
+                profile === img
+                  ? "brightness-100 border-blue-800 border-4"
+                  : "brightness-50"
+              }`}
+              alt="profile"
+              onClick={() => {
+                setProfile(img);
+                localStorage.setItem("pf", img);
+                setEdit(false);
+              }}
+            />
+          ))}
+        </div>
+      )}
+      <div className="w-[90%] mx-auto flex flex-col justify-center overflow-visible items-center border-b-2 py-2">
         <img
           src={profile}
           alt="profile"
           className="rounded-full mx-auto w-[50%] aspect-square"
-          onDoubleClick={() => {
-            edit === false ? setEdit(true) : setEdit(false);
-          }}
+          onDoubleClick={() => setEdit(!edit)}
         />
         <img
           src={editIcon}
@@ -73,7 +95,6 @@ function menu ({setUrl, setFilterValue}) {
           onClick={() => setEdit(!edit)}
           className="w-6 h-6 absolute top-2 right-2"
         />
-
         {!nameEdit ? (
           <h1 className="my-2" onDoubleClick={() => setNameEdit(true)}>
             {userName}
@@ -100,201 +121,143 @@ function menu ({setUrl, setFilterValue}) {
             />
           </div>
         )}
-        {/* profile to choose */}
-        {edit && (
-          <div className="absolute w-[350px] md:w-[400px] gap-2 p-2 bg-black border  bg-opacity-80 z-50 left-3 top-full md:top-0 md:left-[100%] rounded-lg grid grid-cols-5">
-            {images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                className={`w-[100%]  rounded-sm hover:brightness-100 ${
-                  profile === img
-                    ? "brightness-100 border-blue-800 border-4"
-                    : "brightness-50"
-                }`}
-                alt="profile"
-                onClick={() => {
-                  setProfile(img);
-                  localStorage.setItem("pf", img);
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
-
       <div className="px-3 py-3 text-sm">Library</div>
-      {/* all  */}
-      <div
-        className="w-[90%] mx-auto flex text-[14px] items-center space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80 hover:bg-blue-900 mb-2"
-        onClick={() =>
-          setUrl(
+
+      {/* All */}
+      <MenuButton
+        onClick={() => {
+          changeLink(
             "https://api.themoviedb.org/3/trending/all/day?api_key=31d6afcc99f364c40d22f14b2fe5bc6e"
-          )
-        }
+          );
+          setLeftPosition(-100);
+        }}
+        text={"All"}
+        imgName={all}
+      />
+
+      {/* Movies */}
+      <MenuButton
+        imgName={movie}
+        text={"Movies"}
+        addclass={"justify-between p-0 space-x-0"}
       >
-        <img src={all} alt="" className="w-5 h-5" />
-        <p>All</p>
-      </div>
-      {/* movie */}
-      <div className="w-[90%] cursor-pointer mx-auto flex justify-between text-[14px] items-center  px-3 rounded-md hover:bg-opacity-80 hover:bg-blue-900 ">
         <div
-          className="flex space-x-2 w-full py-2   "
-          onClick={() => {
-            setUrl(
-              `https://api.themoviedb.org/3/movie/now_playing?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
-            );
-            setFilterValue("");
-          }}
-        >
-          <img src={movie} alt="" className="w-5 h-5" />
-          <p>Movies</p>
-        </div>
-        <div
-          onClick={() => {
+          onClick={(e) => {
             setMoviesFilter(moviesFilter === 0 ? 180 : 0);
             setSeriesFilter(0);
           }}
-          className="p-1 rounded-full hover:bg-gray-600"
+          className="min-w-[20%] rounded-full flex justify-center max-h-full"
         >
           <img
             src={dropDown}
             alt=""
-            className="w-4 h-4 transition-all"
+            className="h-6 w-6 transition-all hover:bg-gray-100 hover:bg-opacity-20 p-0.5 rounded-full"
             style={{ transform: `rotate(${moviesFilter}deg)` }}
           />
         </div>
-      </div>
-
+      </MenuButton>
       <div
-        className={`w-[90%] cursor-pointer mx-auto flex flex-col text-[14px]   bg-blue-950    px-3 rounded-md  mb-2 ${
+        className={`w-[90%] transition-all cursor-pointer mx-auto flex flex-col text-[14px]  px-3 rounded-md mb-2 ${
           moviesFilter === 180
-            ? "h-[170px] py-2 transition-all "
-            : "h-0 transition-all "
+            ? "h-[238px] py-2 opacity-100 bg-blue-950"
+            : "h-0 py-0 opacity-0 bg-transparent"
         }`}
       >
         {moviesFilter === 180 && (
           <section>
-            <div
-              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
-              onClick={() => setFilterValue(28)}
-            >
-              <p>Action</p>
-            </div>
-            <div
-              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
-              onClick={() => setFilterValue(16)}
-            >
-              <p>Animation</p>
-            </div>
-            <div
-              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
-              onClick={() => setFilterValue(18)}
-            >
-              <p>Drama</p>
-            </div>
-            <div
-              className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300"
-              onClick={() => setFilterValue(10751)}
-            >
-              <p>Family</p>
-            </div>
+            {movieGenres &&
+              movieGenres.genres
+                .slice(0, 6)
+                .map((data) => (
+                  <FilterOption
+                  key={data.id}
+                    type={data.name}
+                    id={data.id}
+                    filterFun={filterFun}
+                    isActive={activeFilter === data.name}
+                    genType={"movie"}
+                  />
+                ))}
           </section>
         )}
       </div>
 
-      {/* series icon */}
-      <div className="w-[90%] cursor-pointer mx-auto flex justify-between text-[14px] items-center px-3 rounded-md  hover:bg-opacity-80 hover:bg-blue-900">
-        <div
-          className="flex space-x-2 w-full  py-2"
-          onClick={() => {
-            setUrl(
-              `https://api.themoviedb.org/3/tv/top_rated?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
-            );
-            setFilterValue("");
-          }}
-        >
-          <img src={series} alt="" className="w-5 h-5" />
-          <p>Series</p>
-        </div>
-
+      {/* Series */}
+      <MenuButton
+        imgName={series}
+        text={"Series"}
+        addclass={"justify-between pl-3 pr-0"}
+      >
         <div
           onClick={(e) => {
             e.preventDefault();
             setSeriesFilter(seriesFilter === 0 ? 180 : 0);
             setMoviesFilter(0);
           }}
-          className="p-1 rounded-full hover:bg-gray-600"
+          className="min-w-[20%] rounded-full flex justify-center max-h-full"
         >
           <img
             src={dropDown}
             alt=""
-            className="w-4 h-4 transition-all "
+            className="h-6 w-6 transition-all hover:bg-gray-400 p-1 rounded-full"
             style={{ transform: `rotate(${seriesFilter}deg)` }}
           />
         </div>
-      </div>
-
+      </MenuButton>
       <div
-        className={`w-[90%] cursor-pointer mx-auto flex flex-col text-[14px]   bg-blue-950  px-3 rounded-md  mb-2 ${
-          seriesFilter === 180
-            ? "h-[130px] py-2 transition-all "
-            : "h-0 transition-all "
+        className={`w-[90%] transition-all cursor-pointer mx-auto flex flex-col text-[14px] bg-blue-950 px-3 rounded-md mb-2 ${
+          seriesFilter === 180 ? "h-auto py-2 " : "h-0 "
         }`}
       >
         {seriesFilter === 180 && (
           <section>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
-              <p>Korea</p>
-            </div>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
-              <p>Thai</p>
-            </div>
-            <div className="transition-opacity duration-500  px-3 rounded-md py-2  w-full hover:bg-red-300">
-              <p>China</p>
-            </div>
+            {tvGenres &&
+              tvGenres.genres
+                .slice(0, 6)
+                .map((data) => (
+                  <FilterOption
+                    key={data.id}
+                    type={data.name}
+                    id={data.id}
+                    filterFun={filterFun}
+                    isActive={activeFilter === data.name}
+                    genType={"tv"}
+                  />
+                ))}
           </section>
         )}
       </div>
 
+      {/* Custom */}
       <div className="px-3 py-3 text-sm">Custom</div>
-
-      {!user && (
-        <Link
-          to="/login"
-          className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80 hover:bg-blue-900 mb-2"
-        >
-          <img src={user} alt="" className="w-6 h-6" />
-          <p>Login</p>
-        </Link>
-      )}
-
-      {user && (
-        <div
-          className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2"
+      {!user ? (
+        <MenuButton
+          onClick={() => navigate("/login")}
+          text={"Login"}
+          imgName={logout}
+        />
+      ) : (
+        <MenuButton
+          text={"Logout"}
+          imgName={logout}
           onClick={() => {
-            signOut(auth).then(navigate("/login"));
+            signOut(auth).then(() => navigate("/login"));
           }}
-        >
-          <img src={logout} alt="" className="w-6 h-6" />
-          <p>Logout</p>
-        </div>
+        />
       )}
-
-      <Link to="/create">
-        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
-          <img src={editIcon} alt="" className="w-6 h-6" />
-          <p>Create</p>
-        </div>
-      </Link>
-
-      <Link to="/movie">
-        <div className="w-[90%] mx-auto flex space-x-2 px-3 rounded-md py-2 hover:bg-opacity-80  hover:bg-red-900 mb-2">
-          <img src={editIcon} alt="" className="w-6 h-6" />
-          <p>Dash Board</p>
-        </div>
-      </Link>
-    </section>
+      <MenuButton
+        onClick={() => navigate("/create")}
+        text={"Create"}
+        imgName={editIcon}
+      />
+      <MenuButton
+        onClick={() => navigate("/movie")}
+        text={"Dashboard"}
+        imgName={editIcon}
+      />
+    </menu>
   );
 }
- export default menu
+
+export default Menu;

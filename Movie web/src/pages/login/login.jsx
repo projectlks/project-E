@@ -57,14 +57,14 @@ const loginFun = async () => {
       <section className="w-full">
         <section className="max-w-lg w-[90%] mx-auto h-screen flex items-center justify-center overflow-y-auto overflow-x-hidden transition-all transform relative">
           <div
-            className={`w-full pb-3 p-8 rounded-lg transition-all absolute bg-blue-800 bg-opacity-20 ${
+            className={`w-full pb-3 pt-6 px-6 md:px-8 mb:pb-3 md:pt-8 rounded-lg transition-all absolute bg-blue-800 bg-opacity-20 ${
               !isSwitch ? "left-0 delay-300" : "-left-full"
             }`}
           >
-            <h1 className="text-4xl font-bold w-full mb-2 text-center">
+            <h1 className="md:text-4xl text-3xl font-bold w-full mb-2 text-center">
               Welcome Back!
             </h1>
-            <p className="mb-6 text-lg font-semibold text-blue-500">
+            <p className="mb-6 w-full text-ellipsis overflow-hidden whitespace-nowrap text-lg font-semibold text-blue-500 ">
               Log in to continue exploring!
             </p>
 
@@ -119,10 +119,10 @@ const loginFun = async () => {
               </button>
             </div>
 
-            <div className="flex space-x-1 justify-center">
-              <p>If you don't have an account.</p>
+            <div className="flex flex-col md:flex-row space-x-1 text-xs md:text-base space-y-1 md:space-y-0 md:space-x-1 justify-center items-center">
+              <p>If you don't have an account,</p>
               <p
-                className="cursor-pointer hover:text-blue-500"
+                className="cursor-pointer hover:text-blue-800 transition-all"
                 onClick={() => setIsSwitch(true)}
               >
                 Create an Account
@@ -131,7 +131,7 @@ const loginFun = async () => {
           </div>
           {/* sign Up Form */}
           <div
-            className={`w-full pb-3 p-8 rounded-lg transition-all absolute bg-blue-800 bg-opacity-20 ${
+            className={`w-full pb-3 pt-6 px-6 md:px-8 mb:pb-3 md:pt-8 rounded-lg transition-all absolute bg-blue-800 bg-opacity-20 ${
               isSwitch ? "right-0 delay-300" : "-right-full"
             }`}
           >
