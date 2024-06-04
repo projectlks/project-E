@@ -163,7 +163,7 @@ let {deleteDocument} = useFirestore()
                     </td>
 
                     <td className="px-6 py-3 border-r border-blue-500">
-                      {movie.date}
+                      {movie.release_date}
                     </td>
                     <td className="px-6 py-3 border-r border-blue-500">
                       {movie.genres && movie.genres.slice(0, 1).map((g) => g)}
@@ -195,9 +195,7 @@ let {deleteDocument} = useFirestore()
       {/* {error} */}
       {error && <p> {error}</p>}
       {/* loading */}
-      {loading && (
-       <PageLoading/>
-      )}
+      {loading && <PageLoading />}
       {/* delete section */}
       {deleteID && (
         <form

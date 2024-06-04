@@ -65,7 +65,7 @@ export default function App() {
         </div>
 
         {/* Right */}
-        <div className={`flex w-[90%] mx-auto right`}>
+        <div className={` w-[90%] mx-auto right`}>
           <MainShow />
         </div>
       </div>

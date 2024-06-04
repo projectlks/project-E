@@ -8,7 +8,7 @@ import useFirestore from "../hooks/useFirestore";
 import { serverTimestamp } from "firebase/firestore";
 import PromotionShow from "../components/PromotionShow";
 import DetialPageLoading from "../components/loading/DetialPageLoading";
-import moment from "moment"; // Make sure you have moment.js installed
+import moment from "moment";
 
 export default function Detail() {
   const [movie, setMovie] = useState([]);
@@ -34,10 +34,6 @@ export default function Detail() {
     loading
   } = useFetch(
     `https://api.themoviedb.org/3/${type}/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
-  );
-
-  const { data: recommenction } = useFetch(
-    `https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
   );
 
   useEffect(() => {
@@ -73,121 +69,119 @@ export default function Detail() {
       {loading && <DetialPageLoading />}
       {!error && !loading && movie && (
         <>
-  
-            <section
-              className="w-full overflow-auto  bg-center bg-no-repeat bg-cover md:bg-contain"
-              style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`
-              }}
-            >
-              <div className="w-full bg-black min-h-screen py-0 xl:py-0 md:py-[50px] bg-opacity-70">
-                <div className="text-white flex w-full flex-col md:flex-row md:w-[80%] mx-auto min-h-screen items-center">
+          <section
+            className="w-full overflow-auto  bg-center bg-no-repeat bg-cover md:bg-contain"
+            style={{
+              backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`
+            }}
+          >
+            <div className="w-full bg-black min-h-screen py-0 xl:py-0 md:py-[50px] bg-opacity-70">
+              <div className="text-white flex w-full flex-col md:flex-row md:w-[80%] mx-auto min-h-screen items-center">
+                <img
+                  src={left}
+                  alt="left"
+                  className="w-10 h-10 fixed top-3 left-3"
+                  onClick={() => navigate(-1)}
+                />
+                <div className="w-[50%] my-[50px] md:mt-0">
                   <img
-                    src={left}
-                    alt="left"
-                    className="w-10 h-10 absolute top-3 left-3"
-                    onClick={() => navigate(-1)}
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt=""
+                    className="w-[80%] mx-auto shadow-md shadow-orange-100"
                   />
-                  <div className="w-[50%] my-[50px] md:mt-0">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt=""
-                      className="w-[80%] mx-auto shadow-md shadow-orange-100"
-                    />
+                </div>
+                <div className="w-full px-10 relative">
+                  <div className="absolute top-[-40px] md:top-0 right-10 p-2 transition-all hover:bg-slate-500 rounded-full justify-center items-center flex">
+                    <img src={share} alt="share" className="w-8 h-8" />
                   </div>
-                  <div className="w-full px-10 relative">
-                    <div className="absolute top-[-40px] md:top-0 right-10 p-2 transition-all hover:bg-slate-500 rounded-full justify-center items-center flex">
-                      <img src={share} alt="share" className="w-8 h-8" />
+                  <h1 className="text-5xl mb-5 font-bold">
+                    {movie.name} {movie.original_title}
+                  </h1>
+                  <div className="mb-10 md:mb-20">
+                    <p className="text-3xl mb-3">
+                      {type === "movie"
+                        ? "Release Date : "
+                        : "First Air Date :"}
+                      {movie.release_date} {movie.first_air_date}
+                    </p>
+                    <div className="flex space-x-2 text-[1rem] mb-4">
+                      {movie.genres &&
+                        movie.genres.map((g, index) => (
+                          <p key={g.id}>
+                            {g.name}
+                            {index === movie.genres.length - 1 ? "." : ","}
+                          </p>
+                        ))}
                     </div>
-                    <h1 className="text-5xl mb-5 font-bold">
-                      {movie.name} {movie.original_title}
-                    </h1>
-                    <div className="mb-10 md:mb-20">
-                      <p className="text-3xl mb-3">
-                        {type === "movie"
-                          ? "Release Date : "
-                          : "First Air Date :"}
-                        {movie.release_date} {movie.first_air_date}
+                    <div className="flex items-center">
+                      <img
+                        src={star}
+                        alt="star"
+                        className="w-10 h-15 mr-1 text-red-400"
+                      />
+                      <p className="text-[40px] mr-3">
+                        {movie.vote_average && movie.vote_average.toFixed(1)}
                       </p>
-                      <div className="flex space-x-2 text-[1rem] mb-4">
-                        {movie.genres &&
-                          movie.genres.map((g, index) => (
-                            <p key={g.id}>
-                              {g.name}
-                              {index === movie.genres.length - 1 ? "." : ","}
-                            </p>
-                          ))}
-                      </div>
-                      <div className="flex items-center">
-                        <img
-                          src={star}
-                          alt="star"
-                          className="w-10 h-15 mr-1 text-red-400"
-                        />
-                        <p className="text-[40px] mr-3">
-                          {movie.vote_average && movie.vote_average.toFixed(1)}
-                        </p>
-                        / 10 ,
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
-                          alt="IMDb"
-                          className="w-10 mx-3"
-                        />
-                        <h1 className="text-[20px] md:text-[40px] mr-3">
-                          , {movie.runtime} {movie.number_of_episodes}{" "}
-                          {type === "tv" ? "Episodes" : "min"}
-                        </h1>
-                      </div>
-                      <p className="text-[1rem]">{movie.overview}</p>
+                      / 10 ,
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
+                        alt="IMDb"
+                        className="w-10 mx-3"
+                      />
+                      <h1 className="text-[20px] md:text-[40px] mr-3">
+                        , {movie.runtime} {movie.number_of_episodes}{" "}
+                        {type === "tv" ? "Episodes" : "min"}
+                      </h1>
                     </div>
-                    <div className="flex w-full space-x-10 justify-center py-5">
-                      <a
-                        onClick={() => setBtnLoading(true)}
-                        href={movie.homepage}
-                        className="w-[50%] py-3 bg-red-400 hover:bg-blue-900 bg-opacity-80 transition-all rounded-full cursor-pointer flex justify-center items-center"
-                      >
-                        {btnLoading && (
-                          <svg
-                            className="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-700"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                        )}
-                        <h1>More Info</h1>
-                      </a>
-                      <div
-                        className={`w-[50%] py-3 bg-blue-700 transition-all hover:bg-blue-900 bg-opacity-80 rounded-full ${
-                          movie.video === false
-                            ? "cursor-not-allowed"
-                            : "cursor-pointer"
-                        } text-center`}
-                      >
-                        Watch Now
-                      </div>
+                    <p className="text-[1rem]">{movie.overview}</p>
+                  </div>
+                  <div className="flex w-full space-x-10 justify-center py-5">
+                    <a
+                      onClick={() => setBtnLoading(true)}
+                      href={movie.homepage}
+                      className="w-[50%] py-3 bg-red-400 hover:bg-blue-900 bg-opacity-80 transition-all rounded-full cursor-pointer flex justify-center items-center"
+                    >
+                      {btnLoading && (
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-700"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                      )}
+                      <h1>More Info</h1>
+                    </a>
+                    <div
+                      className={`w-[50%] py-3 bg-blue-700 transition-all hover:bg-blue-900 bg-opacity-80 rounded-full ${
+                        movie.video === false
+                          ? "cursor-not-allowed"
+                          : "cursor-pointer"
+                      } text-center`}
+                    >
+                      Watch Now
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
-          
+            </div>
+          </section>
 
           {/* Recommenction */}
-          <section className="w-[80%] p-10 border mx-auto">
+          <section className="md:w-[80%] w-full p-10  mx-auto">
             <h1 className="text-4xl font-bold">Recommenction Movies</h1>
             <PromotionShow
               url={`https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`}

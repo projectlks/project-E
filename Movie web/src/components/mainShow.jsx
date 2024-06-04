@@ -92,17 +92,13 @@ const { data, loading, error } = useFetch(link);
   };
   return (
     <>
-      {error && <h1>{error}</h1>}
-
+      {error && <h1 className="w-full text-center text-red-600 text-4xl">{error}</h1>}
       <section className="relative w-full min-h-screen pb-[90px]">
-        {loading && <MoviePageLoading itemsPerPage={itemsPerPage} />}
+        {!error && loading && <MoviePageLoading itemsPerPage={itemsPerPage} />}
         {!loading && (
           <SwitchTransition>
             <CSSTransition timeout={300} classNames="fade" key={startIndex}>
-
-              <div className="w-full grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5 md:gap-10 px-3 mt-3 md:px-5 ">
-
-               
+              <div className="w-full grid  grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5 md:gap-10 px-3 mt-3 md:px-5 ">
                 {data &&
                   data.results &&
                   data.results.slice(startIndex, endIndex).map((m) => (
@@ -120,6 +116,12 @@ const { data, loading, error } = useFetch(link);
                           alt={`${m.title} Poster`}
                           className="w-full rounded-xl  transition-all group-hover:brightness-[30%] group-hover:scale-105"
                         />
+                        {/* test  */}
+                        {m.media_type && m.media_type === "tv" && (
+                          <p className="absolute top-2 left-2 px-3 py-1 rounded-full bg-black text-white bg-opacity-50 flex items-center">
+                            Series
+                          </p>
+                        )}
                         <p className="absolute top-2 right-2 px-3 py-1 rounded-full bg-black text-white bg-opacity-50 flex items-center">
                           <img
                             src={star}
