@@ -15,6 +15,7 @@ export default function Detail() {
   const [btnLoading, setBtnLoading] = useState(false);
   const [type, setType] = useState("");
   const [comment, setComment] = useState("");
+   const [imgLink, setImgLink] = useState([]);
 
   let { id } = useParams();
   let location = useLocation();
@@ -33,11 +34,24 @@ export default function Detail() {
     error,
     loading
   } = useFetch(
-    `https://api.themoviedb.org/3/${type}/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+    `https://api.themoviedb.org/3/${type}/${id}?api_key=31d6afcc99f364c40d22f14b2fe5bc6e&language=en-US&append_to_response=credits`
   );
 
   useEffect(() => {
     setMovie(moviedata);
+    if (
+      moviedata &&
+      moviedata.credits &&
+      moviedata.credits.cast &&
+      moviedata.credits.cast.length > 0
+    ) {
+      let castList = [];
+      moviedata.credits.cast.forEach((cast) => {
+        castList.push(cast);
+      });
+
+      setImgLink(castList);
+    }
   }, [moviedata]);
 
   let { addCollection, getCollection } = useFirestore();
@@ -59,6 +73,20 @@ export default function Detail() {
 
   let { data: commentData } = getCollection("comments");
 
+  // tarlier
+  let { data: trailer } = useFetch(
+    `https://api.themoviedb.org/3/${type}/${id}/videos?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
+  );
+
+  // Filter out trailers
+  let keys =
+    trailer &&
+    trailer.results &&
+    trailer.results.filter((data) => data.type === "Trailer");
+
+  // Extract the key of the first trailer
+  let key = keys && keys.length > 0 && keys[0].key;
+
   return (
     <>
       {!loading && error && (
@@ -68,15 +96,15 @@ export default function Detail() {
       )}
       {loading && <DetialPageLoading />}
       {!error && !loading && movie && (
-        <>
+        <section className="w-full mx-auto md:w-[80%]">
           <section
-            className="w-full overflow-auto  bg-center bg-no-repeat bg-cover md:bg-contain"
+            className=" overflow-auto w-full bg-center bg-no-repeat bg-cover md:bg-contain"
             style={{
               backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`
             }}
           >
             <div className="w-full bg-black min-h-screen py-0 xl:py-0 md:py-[50px] bg-opacity-70">
-              <div className="text-white flex w-full flex-col md:flex-row md:w-[80%] mx-auto min-h-screen items-center">
+              <div className="text-white flex w-full flex-col md:flex-row  mx-auto min-h-screen items-center">
                 <img
                   src={left}
                   alt="left"
@@ -180,15 +208,43 @@ export default function Detail() {
             </div>
           </section>
 
+          {/* tralier section */}
+
+          {key && (
+            <div className="relative md:border p-4 mt-5 overflow-hidden w-full aspect-[16/9]  md:w-[50%] mx-auto bg-black">
+              <iframe
+                src={`https://www.youtube.com/embed/${key}?autoplay=0&rel=0&modestbranding=1`}
+                allowFullScreen
+                // className="absolute top-0 left-0 w-full h-full "
+                className="w-full h-full"
+              ></iframe>
+            </div>
+          )}
+          {/* CAST LIST */}
+          <h2>Main Casts</h2>
+          <section className="flex w-full p-10 overflow-y-auto scrollbar-thin  mx-auto space-x-10">
+            {imgLink.slice(0, 10).map((link, index) => (
+              <div className=" h-auto min-w-[200px] " key={index}>
+                <h1>{link.original_name}</h1>
+                <img
+                  src={`https://image.tmdb.org/t/p/original${link.profile_path}`}
+                  className="object-cover select-none h-full"
+                  alt="this is cast"
+                />
+              </div>
+            ))}
+          </section>
           {/* Recommenction */}
-          <section className="md:w-[80%] w-full p-10  mx-auto">
-            <h1 className="text-4xl font-bold">Recommenction Movies</h1>
+          <section className=" w-full p-10  mx-auto">
+            <h1 className="md:text-4xl text-base font-bold">
+              Discover Similar Movies You'll Love
+            </h1>
             <PromotionShow
               url={`https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`}
             />
           </section>
           {/* comment box */}
-          <section className="md:w-[80%] w-[90%] mx-auto mb-40 transition-all">
+          <section className=" w-full mx-auto mb-40 transition-all">
             <form className="w-full mb-6" onSubmit={(e) => addComment(e)}>
               <label
                 htmlFor="message"
@@ -242,8 +298,11 @@ export default function Detail() {
                   </div>
                 ))}
           </section>
-        </>
+        </section>
       )}
     </>
   );
 }
+
+// https://api.themoviedb.org/3/movie/786892?api_key=31d6afcc99f364c40d22f14b2fe5bc6e&language=en-US&append_to_response=credits
+// https://api.themoviedb.org/3/movie/786892/credits?api_key=31d6afcc99f364c40d22f14b2fe5bc6e

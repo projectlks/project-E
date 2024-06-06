@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function DetialPageLoading() {
+
+
+
   return (
-    <div className="md:border rounded-lg animate-bounce py-0 xl:py-0 md:py-[50px]  min-h-screen m-10 flex w-full justify-center flex-col md:flex-row md:w-[80%]  mx-auto">
+    <div className="md:border rounded-lg  py-0 xl:py-0 md:py-[50px]  min-h-screen m-10 flex w-full justify-center flex-col md:flex-row md:w-[80%]  mx-auto">
       <div className="w-[50%]  md:mt-0 mx-auto flex justify-center items-center  ">
         <span className="w-[80%] block mx-auto aspect-[1/1.5] h-auto  shadow-md bg-slate-700 animate-pulse"></span>
       </div>
