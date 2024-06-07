@@ -4,7 +4,7 @@ import useFetch from "../hooks/useFetch";
 import star from "../assets/star.svg";
 import PromotionPageLoading from "./loading/PromotionPageLoading";
 
-export default function PromotionShow({ url }) {
+export default function PromotionShow({ url, arrayName }) {
   const [genres, setGenres] = useState({});
   const navigate = useNavigate();
 
@@ -37,10 +37,11 @@ export default function PromotionShow({ url }) {
         <section className=" scrollbar-thin mb-5 w-full py-4 px-5 overflow-x-auto scrollbar-thin scrollbar-thumb-red-500">
           <div className="flex space-x-10 select-none">
             {data &&
-              data.results &&
-              data.results.map((m) => (
+          
+              data[arrayName] &&
+              data[arrayName].map((m, index) => (
                 <div
-                  key={m.id}
+                  key={index}
                   className="flex min-w-[250px] h-[130px] mt-10 border border-blue-700 rounded-lg overflow-hidden"
                   onClick={() =>
                     navigate(
@@ -85,7 +86,7 @@ export default function PromotionShow({ url }) {
                           alt="rating"
                           className="mr-1 w-[12px] h-[18px]"
                         />
-                        <p>{m.vote_average.toFixed(1)}</p>
+                        <p>{m.vote_average?.toFixed(1)}</p>
                       </span>
                     </span>
                   </div>

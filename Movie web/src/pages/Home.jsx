@@ -32,6 +32,7 @@ export default function App() {
       <h1 className="text-4xl font-bold">Upcoming Movies</h1>
       <PromotionShow
         url={`https://api.themoviedb.org/3/movie/upcoming?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`}
+        arrayName={'results'}
       />
 
       {/* Search input */}

@@ -6,6 +6,7 @@ import Login from "../pages/login/login.jsx";
 import Layout from "../pages/layout.jsx";
 import CreateAndEditForm from "../pages/createAndEditForm/createAndEditForm.jsx";
 import Movie from "../pages/dashBoard/movie.jsx";
+import CastDetailPage from "../pages/CastDetailPage.jsx";
 import  { AuthContext } from "../contexts/AuthContext.jsx";
 import React, { useContext } from 'react'
 
@@ -58,6 +59,10 @@ let { authReady, user } = useContext(AuthContext);
         {
           path: "/movie",
           element: isUserLogin ? <Movie /> : <Navigate to="/login" />
+        },
+        {
+          path: "/cast/:id",
+          element: isUserLogin ? <CastDetailPage /> : <Navigate to="/login" />
         }
       ]
     }

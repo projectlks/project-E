@@ -1,35 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import useFirestore from "../hooks/useFirestore";
 import star from "../assets/star.svg";
 import left from "../assets/left.svg";
 import share from "../assets/share.svg";
-import useFirestore from "../hooks/useFirestore";
-import { serverTimestamp } from "firebase/firestore";
 import PromotionShow from "../components/PromotionShow";
 import DetialPageLoading from "../components/loading/DetialPageLoading";
 import moment from "moment";
+import { serverTimestamp } from "firebase/firestore";
 
 export default function Detail() {
   const [movie, setMovie] = useState([]);
   const [btnLoading, setBtnLoading] = useState(false);
   const [type, setType] = useState("");
   const [comment, setComment] = useState("");
-   const [imgLink, setImgLink] = useState([]);
+  const [imgLink, setImgLink] = useState([]);
 
   let { id } = useParams();
   let location = useLocation();
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === `/detailMovie/${id}`) {
-      setType("movie");
-    } else {
-      setType("tv");
-    }
+    setType(location.pathname.includes("/detailMovie/") ? "movie" : "tv");
   }, [location]);
 
-  let {
+  const {
     data: moviedata,
     error,
     loading
@@ -39,24 +35,14 @@ export default function Detail() {
 
   useEffect(() => {
     setMovie(moviedata);
-    if (
-      moviedata &&
-      moviedata.credits &&
-      moviedata.credits.cast &&
-      moviedata.credits.cast.length > 0
-    ) {
-      let castList = [];
-      moviedata.credits.cast.forEach((cast) => {
-        castList.push(cast);
-      });
-
-      setImgLink(castList);
+    if (moviedata?.credits?.cast?.length > 0) {
+      setImgLink(moviedata.credits.cast);
     }
   }, [moviedata]);
 
-  let { addCollection, getCollection } = useFirestore();
+  const { addCollection, getCollection } = useFirestore();
 
-  let data = {
+  const data = {
     date: serverTimestamp(),
     mid: id,
     comment
@@ -64,28 +50,21 @@ export default function Detail() {
 
   const addComment = async (e) => {
     e.preventDefault();
-
-    if (comment !== "") {
+    if (comment) {
       await addCollection("comments", data);
       setComment("");
     }
   };
 
-  let { data: commentData } = getCollection("comments");
+  const { data: commentData } = getCollection("comments");
 
-  // tarlier
-  let { data: trailer } = useFetch(
+  const { data: trailer } = useFetch(
     `https://api.themoviedb.org/3/${type}/${id}/videos?api_key=31d6afcc99f364c40d22f14b2fe5bc6e`
   );
 
-  // Filter out trailers
-  let keys =
-    trailer &&
-    trailer.results &&
-    trailer.results.filter((data) => data.type === "Trailer");
-
-  // Extract the key of the first trailer
-  let key = keys && keys.length > 0 && keys[0].key;
+  const trailerKey = trailer?.results?.find(
+    (data) => data.type === "Trailer"
+  )?.key;
 
   return (
     <>
@@ -98,23 +77,23 @@ export default function Detail() {
       {!error && !loading && movie && (
         <section className="w-full mx-auto md:w-[80%]">
           <section
-            className=" overflow-auto w-full bg-center bg-no-repeat bg-cover md:bg-contain"
+            className="overflow-auto w-full bg-center bg-no-repeat bg-cover md:bg-contain"
             style={{
               backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`
             }}
           >
             <div className="w-full bg-black min-h-screen py-0 xl:py-0 md:py-[50px] bg-opacity-70">
-              <div className="text-white flex w-full flex-col md:flex-row  mx-auto min-h-screen items-center">
+              <div className="text-white flex w-full flex-col md:flex-row mx-auto min-h-screen items-center">
                 <img
                   src={left}
                   alt="left"
-                  className="w-10 h-10 fixed top-3 left-3"
+                  className="w-10 h-10 fixed top-3 left-3 cursor-pointer"
                   onClick={() => navigate(-1)}
                 />
                 <div className="w-[50%] my-[50px] md:mt-0">
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt=""
+                    alt={movie.original_title || movie.name}
                     className="w-[80%] mx-auto shadow-md shadow-orange-100"
                   />
                 </div>
@@ -123,14 +102,12 @@ export default function Detail() {
                     <img src={share} alt="share" className="w-8 h-8" />
                   </div>
                   <h1 className="text-5xl mb-5 font-bold">
-                    {movie.name} {movie.original_title}
+                    {movie.name || movie.original_title}
                   </h1>
                   <div className="mb-10 md:mb-20">
                     <p className="text-3xl mb-3">
-                      {type === "movie"
-                        ? "Release Date : "
-                        : "First Air Date :"}
-                      {movie.release_date} {movie.first_air_date}
+                      {type === "movie" ? "Release Date: " : "First Air Date: "}
+                      {movie.release_date || movie.first_air_date}
                     </p>
                     <div className="flex space-x-2 text-[1rem] mb-4">
                       {movie.genres &&
@@ -148,16 +125,16 @@ export default function Detail() {
                         className="w-10 h-15 mr-1 text-red-400"
                       />
                       <p className="text-[40px] mr-3">
-                        {movie.vote_average && movie.vote_average.toFixed(1)}
+                        {movie.vote_average?.toFixed(1)}
                       </p>
-                      / 10 ,
+                      / 10
                       <img
                         src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
                         alt="IMDb"
                         className="w-10 mx-3"
                       />
                       <h1 className="text-[20px] md:text-[40px] mr-3">
-                        , {movie.runtime} {movie.number_of_episodes}{" "}
+                        , {movie.runtime || movie.number_of_episodes}{" "}
                         {type === "tv" ? "Episodes" : "min"}
                       </h1>
                     </div>
@@ -208,44 +185,53 @@ export default function Detail() {
             </div>
           </section>
 
-          {/* tralier section */}
-
-          {key && (
-            <div className="relative md:border p-4 mt-5 overflow-hidden w-full aspect-[16/9]  md:w-[50%] mx-auto bg-black">
+          {/* Trailer Section */}
+          {trailerKey && (
+            <div className="relative md:border p-4 mt-5 overflow-hidden w-full aspect-[16/9] md:w-[50%] mx-auto bg-black">
               <iframe
-                src={`https://www.youtube.com/embed/${key}?autoplay=0&rel=0&modestbranding=1`}
+                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=0&rel=0&modestbranding=1`}
                 allowFullScreen
-                // className="absolute top-0 left-0 w-full h-full "
                 className="w-full h-full"
               ></iframe>
             </div>
           )}
-          {/* CAST LIST */}
+
+          {/* Cast List */}
           <h2>Main Casts</h2>
-          <section className="flex w-full p-10 overflow-y-auto scrollbar-thin  mx-auto space-x-10">
+          <section className="flex w-full h-auto p-10 overflow-x-auto scrollbar-thin mx-auto space-x-10">
             {imgLink.slice(0, 10).map((link, index) => (
-              <div className=" h-auto min-w-[200px] " key={index}>
-                <h1>{link.original_name}</h1>
-                <img
-                  src={`https://image.tmdb.org/t/p/original${link.profile_path}`}
-                  className="object-cover select-none h-full"
-                  alt="this is cast"
-                />
+              <div
+                className="min-w-[100px] max-w-[100px] md:max-w-[200px] h-auto md:min-w-[200px]"
+                key={index}
+              >
+                <h1 className="whitespace-nowrap text-base overflow-hidden text-ellipsis">
+                  {link.original_name}
+                </h1>
+                <div onClick={() => navigate(`/cast/${link.id}`)}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/original${link.profile_path}`}
+                    className="object-cover select-none h-full"
+                    alt={link.original_name}
+                  />
+                </div>
               </div>
             ))}
           </section>
-          {/* Recommenction */}
-          <section className=" w-full p-10  mx-auto">
+
+          {/* Recommendations */}
+          <section className="w-full p-10 mx-auto">
             <h1 className="md:text-4xl text-base font-bold">
               Discover Similar Movies You'll Love
             </h1>
             <PromotionShow
               url={`https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`}
+              arrayName={"results"}
             />
           </section>
-          {/* comment box */}
-          <section className=" w-full mx-auto mb-40 transition-all">
-            <form className="w-full mb-6" onSubmit={(e) => addComment(e)}>
+
+          {/* Comment Box */}
+          <section className="w-full mx-auto mb-40 transition-all">
+            <form className="w-full mb-6" onSubmit={addComment}>
               <label
                 htmlFor="message"
                 className="block mb-2 text-2xl font-bold text-gray-100"
@@ -288,7 +274,7 @@ export default function Detail() {
                       <div>
                         <p>User Name</p>
                         <p className="text-xs text-gray-500">
-                          {moment(d.date && d.date.seconds * 1000).fromNow()}
+                          {moment(d.date?.seconds * 1000).fromNow()}
                         </p>
                       </div>
                     </div>
@@ -303,6 +289,7 @@ export default function Detail() {
     </>
   );
 }
+
 
 // https://api.themoviedb.org/3/movie/786892?api_key=31d6afcc99f364c40d22f14b2fe5bc6e&language=en-US&append_to_response=credits
 // https://api.themoviedb.org/3/movie/786892/credits?api_key=31d6afcc99f364c40d22f14b2fe5bc6e
