@@ -13,36 +13,40 @@ let { data } = useFetch(
   return (
     <>
       {data && (
-        <section className="w-[90%]  py-10 md:w-[80%] mx-auto">
-          <div className="w-full flex flex-wrap md:flex-nowrap space-x-0 md:space-x-10 p-4  rounded-lg shadow-lg">
-            <span className="w-full mx-auto md:min-w-[30%]  inline-block mb-4 md:mb-0">
+        <section className="w-[90%]  py-10 xl:w-[80%] mx-auto">
+          <div className="w-full h-auto flex flex-wrap md:flex-nowrap space-x-0 md:space-x-10 p-4  rounded-lg shadow-lg">
+            <span className="w-full h-full  mx-auto md:min-w-[40%] xl:min-w-[30%]  flex items-center mb-4 md:mb-0">
               <img
                 src={`https://image.tmdb.org/t/p/original${data.profile_path}`}
                 alt="profile_path"
-                className="md:w-full w-1/2 mx-auto h-auto  rounded-lg"
+                className="md:w-full  w-1/2 mx-auto h-auto  rounded-lg"
               />
             </span>
 
-            <div className="w-full md:min-w-[70%]">
+            <div className="w-full md:min-w-[60%] xl:min-w-[70%]">
               <h1 className="md:text-4xl text-xl  font-bold mb-2">
                 {data.name}
               </h1>
-              <span className="text-lg w-full mx-auto md:flex md:space-x-3 block mb-5">
+              <span className="text-base md:text-lg w-full mx-auto xl:flex xl:space-x-3 block mb-5">
                 <span className=" flex space-x-3">
-                  <h2 className="text-xl text-blue-500 font-semibold">
+                  <h2 className="text-xl whitespace-nowrap text-blue-500 font-semibold">
                     Birthday:
                   </h2>
-                  <p>{data.birthday},</p>
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                    {data.birthday},
+                  </p>
                 </span>
                 <span className="flex space-x-3">
-                  <h2 className="text-xl text-blue-500 font-semibold">
+                  <h2 className="text-xl whitespace-nowrap text-blue-500 font-semibold">
                     Place of Birth:
                   </h2>
-                  <p>{data.place_of_birth}</p>
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                    {data.place_of_birth}
+                  </p>
                 </span>
               </span>
-              {/* <h2 className="text-lg  mb-4"></h2> */}
-              <p className="text-base bg-opacity-20 text-gray-200   w-full mx-auto h-[400px] overflow-y-auto text-justify leading-relaxed p-10  bg-blue-600 font-serif shadow-lg rounded-lg">
+             
+              <p className="text-base bg-opacity-20 text-gray-200 p-5  w-full mx-auto h-[400px] overflow-y-auto text-justify leading-relaxed md:p-10  bg-blue-600 font-serif shadow-lg rounded-lg">
                 {data.biography}
               </p>
             </div>

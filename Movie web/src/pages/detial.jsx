@@ -75,41 +75,43 @@ export default function Detail() {
       )}
       {loading && <DetialPageLoading />}
       {!error && !loading && movie && (
-        <section className="w-full mx-auto md:w-[80%]">
+        <section className="w-[90%] mx-auto md:w-[80%]">
           <section
-            className="overflow-auto w-full bg-center bg-no-repeat bg-cover md:bg-contain"
+            className="overflow-auto  w-full bg-center bg-no-repeat bg-cover md:bg-contain"
             style={{
               backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`
             }}
           >
             <div className="w-full bg-black min-h-screen py-0 xl:py-0 md:py-[50px] bg-opacity-70">
-              <div className="text-white flex w-full flex-col md:flex-row mx-auto min-h-screen items-center">
+              <div className="text-white col-span-10 flex w-full flex-col md:flex-row mx-auto min-h-screen items-center">
                 <img
                   src={left}
                   alt="left"
                   className="w-10 h-10 fixed top-3 left-3 cursor-pointer"
                   onClick={() => navigate(-1)}
                 />
-                <div className="w-[50%] my-[50px] md:mt-0">
+                {/* poster */}
+                <div className="w-full h-full p-5 mx-auto md:min-w-[40%] xl:min-w-[30%] my-[50px] md:mt-0">
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.original_title || movie.name}
-                    className="w-[80%] mx-auto shadow-md shadow-orange-100"
+                    className="w-1/2 md:w-full mx-auto shadow-md shadow-orange-100"
                   />
                 </div>
-                <div className="w-full px-10 relative">
+                {/* other */}
+                <div className="w-full md:min-w-[60%]  xl:min-w-[70%] px-5 md:px-10 relative">
                   <div className="absolute top-[-40px] md:top-0 right-10 p-2 transition-all hover:bg-slate-500 rounded-full justify-center items-center flex">
                     <img src={share} alt="share" className="w-8 h-8" />
                   </div>
-                  <h1 className="text-5xl mb-5 font-bold">
+                  <h1 className=" text-3xl  xl:text-5xl mb-5 font-extrabold ">
                     {movie.name || movie.original_title}
                   </h1>
                   <div className="mb-10 md:mb-20">
-                    <p className="text-3xl mb-3">
+                    <p className="text-xl md:text-2xl  xl:text-3xl mb-3">
                       {type === "movie" ? "Release Date: " : "First Air Date: "}
                       {movie.release_date || movie.first_air_date}
                     </p>
-                    <div className="flex space-x-2 text-[1rem] mb-4">
+                    <div className="flex flex-wrap space-x-2 text-[1rem] mb-4">
                       {movie.genres &&
                         movie.genres.map((g, index) => (
                           <p key={g.id}>
@@ -118,13 +120,14 @@ export default function Detail() {
                           </p>
                         ))}
                     </div>
-                    <div className="flex items-center">
+
+                    <div className="flex flex-wrap items-center">
                       <img
                         src={star}
                         alt="star"
                         className="w-10 h-15 mr-1 text-red-400"
                       />
-                      <p className="text-[40px] mr-3">
+                      <p className="text-[20px] md:text-[40px] mr-3">
                         {movie.vote_average?.toFixed(1)}
                       </p>
                       / 10
@@ -133,12 +136,15 @@ export default function Detail() {
                         alt="IMDb"
                         className="w-10 mx-3"
                       />
-                      <h1 className="text-[20px] md:text-[40px] mr-3">
+                      <h1 className="text-[12px] md:text-[20px] lg:text-[40px] mr-3">
                         , {movie.runtime || movie.number_of_episodes}{" "}
                         {type === "tv" ? "Episodes" : "min"}
                       </h1>
                     </div>
-                    <p className="text-[1rem]">{movie.overview}</p>
+
+                    <p className="text-[1rem] text-justify leading-relaxed">
+                      {movie.overview}
+                    </p>
                   </div>
                   <div className="flex w-full space-x-10 justify-center py-5">
                     <a
@@ -197,8 +203,8 @@ export default function Detail() {
           )}
 
           {/* Cast List */}
-          <h2>Main Casts</h2>
-          <section className="flex w-full h-auto p-10 overflow-x-auto scrollbar-thin mx-auto space-x-10">
+          <h2 className="md:text-4xl text-base font-bold py-4">Main Casts</h2>
+          <section className="flex  transition-all w-full cursor-pointer mb-6 max-h-[334px] overflow-y-hidden  px-10 overflow-x-auto scrollbar-thin mx-auto space-x-10">
             {imgLink.slice(0, 10).map((link, index) => (
               <div
                 className="min-w-[100px] max-w-[100px] md:max-w-[200px] h-auto md:min-w-[200px]"
@@ -210,7 +216,7 @@ export default function Detail() {
                 <div onClick={() => navigate(`/cast/${link.id}`)}>
                   <img
                     src={`https://image.tmdb.org/t/p/original${link.profile_path}`}
-                    className="object-cover select-none h-full"
+                    className="object-cover transition-all not-hover-brightness-0.8 hover:scale-125  select-none h-full"
                     alt={link.original_name}
                   />
                 </div>
@@ -219,10 +225,10 @@ export default function Detail() {
           </section>
 
           {/* Recommendations */}
-          <section className="w-full p-10 mx-auto">
-            <h1 className="md:text-4xl text-base font-bold">
-              Discover Similar Movies You'll Love
-            </h1>
+          <h1 className="md:text-4xl text-base font-bold">
+            Discover Similar Movies You'll Love
+          </h1>
+          <section className="w-full mx-auto">
             <PromotionShow
               url={`https://api.themoviedb.org/3/${type}/${id}/recommendations?language=en-US&page=1&api_key=31d6afcc99f364c40d22f14b2fe5bc6e`}
               arrayName={"results"}
